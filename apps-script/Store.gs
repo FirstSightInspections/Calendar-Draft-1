@@ -343,7 +343,10 @@ function send_(to, subject, html, replyTo) {
   var list = to.filter(function (v, i, a) { return v && a.indexOf(v) === i; });
   if (!list.length) return;
   try {
-    var opts = { to: list.join(','), subject: subject, htmlBody: html, name: CONFIG.COMPANY_NAME };
+    var branded = '<div style="max-width:640px;font:14px Arial,sans-serif;color:#111">' +
+      '<div style="background:#0d0d0d;color:#fff;padding:14px 18px;border-bottom:4px solid #f7941d;font-weight:bold;font-size:16px">' +
+      escHtml_(CONFIG.COMPANY_NAME) + '</div><div style="padding:14px 4px">' + html + '</div></div>';
+    var opts = { to: list.join(','), subject: subject, htmlBody: branded, name: CONFIG.COMPANY_NAME };
     if (replyTo) opts.replyTo = replyTo;
     MailApp.sendEmail(opts);
   } catch (err) {

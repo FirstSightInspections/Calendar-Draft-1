@@ -7,15 +7,19 @@
 <title>First Sight Inspections — Book an Inspection</title>
 <style>
   :root {
-    --ink: #1f2328;
-    --muted: #6b7280;
-    --line: #e4dfd3;
-    --line-strong: #cfc7b6;
-    --soft: #faf8f3;
+    /* Brand: black + amber orange */
+    --black: #0d0d0d;
+    --ink: #111111;
+    --muted: #5c5c5c;
+    --line: #e5e5e5;
+    --line-strong: #cccccc;
+    --soft: #f6f6f6;
     --bg: #ffffff;
-    --accent: #e46f1b;
-    --accent-dark: #c35a10;
-    --accent-soft: #fdf1e7;
+    --accent: #f7941d;        /* amber orange — fills, underlines, highlights */
+    --accent-dark: #e07b00;   /* hover on amber fills */
+    --accent-ink: #111111;    /* text ON amber (white on amber is unreadable) */
+    --accent-text: #a35400;   /* amber-toned text on white, readable */
+    --accent-soft: #fff3e2;
     --ok: #1f7a4d;
     --ok-soft: #e9f6ef;
     --err: #b42318;
@@ -26,17 +30,20 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font); }
   .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 48px; }
+  .brand { background: var(--black); color: #fff; border-radius: var(--radius); padding: 22px 24px 20px; margin-bottom: 18px; border-bottom: 4px solid var(--accent); }
+  .brand .eyebrow { color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin: 0 0 4px; }
   h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -0.01em; }
-  .lede { color: var(--muted); margin: 0 0 22px; }
+  .lede { color: #c8c8c8; margin: 0; }
   button, input, select, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; }
   [hidden] { display: none !important; }
 
-  .demo-banner { background: var(--accent-soft); border: 1px solid #f6cfae; color: #7a3a0a; padding: 8px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; }
+  .demo-banner { background: var(--accent-soft); border: 1px solid #f8cf9a; color: #5a2e00; padding: 8px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; }
 
   /* Tabs */
   .tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line); margin-bottom: 20px; overflow-x: auto; }
   .tab { background: none; border: 0; padding: 10px 6px; margin-right: 18px; font-weight: 600; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+  .tab .short { display: none; }
   .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
 
   /* Cards */
@@ -44,7 +51,7 @@
   .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
   .step-label { font-size: 13px; color: var(--muted); margin: 0; }
   .step-title { font-size: 17px; font-weight: 600; margin: 2px 0 0; }
-  .link { background: none; border: 0; color: var(--accent-dark); padding: 0; font-weight: 600; font-size: 14px; }
+  .link { background: none; border: 0; color: var(--accent-text); padding: 0; font-weight: 600; font-size: 14px; }
   .link:hover { text-decoration: underline; }
   .muted { color: var(--muted); }
   .small { font-size: 13px; }
@@ -66,8 +73,8 @@
   .day:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
   .day:disabled { color: #b8b8b8; border-color: #efece6; background: #fdfcfa; cursor: default; }
   .day.today .num { text-decoration: underline; text-underline-offset: 3px; }
-  .day[aria-pressed="true"], .day[aria-pressed="true"]:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .day[aria-pressed="true"] .hint { color: #fff; }
+  .day[aria-pressed="true"], .day[aria-pressed="true"]:hover:not(:disabled) { background: var(--accent); border-color: var(--black); color: var(--accent-ink); font-weight: 700; }
+  .day[aria-pressed="true"] .hint { color: var(--accent-ink); }
   .day .dots { display: flex; gap: 3px; height: 7px; }
   .day .dot { width: 7px; height: 7px; border-radius: 50%; }
   .day .hint { font-size: 10.5px; line-height: 1.1; color: var(--muted); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -76,13 +83,13 @@
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
 
   /* Time + inspector choices */
-  .choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
   .choice { text-align: left; border: 1px solid var(--line-strong); border-radius: 10px; padding: 12px 14px; background: var(--bg); }
   .choice:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
   .choice:disabled { color: #b0b0b0; border-color: #efece6; cursor: default; }
-  .choice[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-soft); }
+  .choice[aria-pressed="true"] { border-color: var(--black); box-shadow: inset 4px 0 0 var(--accent), inset 0 0 0 1px var(--black); background: var(--accent-soft); }
   .choice .big { font-weight: 600; display: block; }
-  .choice .sub { font-size: 13px; color: var(--muted); display: block; margin-top: 2px; }
+  .choice .sub { font-size: 13px; color: var(--muted); display: block; margin-top: 1px; }
   .insp-choice { display: flex; gap: 12px; align-items: flex-start; }
   .swatch { flex: none; width: 12px; height: 12px; border-radius: 50%; margin-top: 5px; }
   .nearby { background: var(--soft); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; font-size: 14px; }
@@ -95,17 +102,17 @@
   fieldset { border: 0; padding: 0; margin: 0 0 18px; }
   legend { font-weight: 600; margin-bottom: 8px; padding: 0; }
   label { display: block; font-size: 13px; color: var(--muted); }
-  label .req { color: var(--accent-dark); }
+  label .req { color: var(--accent-text); }
   .field input, .field select, .field textarea, .input {
     display: block; width: 100%; margin-top: 4px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--bg); font-size: 16px; }
-  .field input:focus, .field select:focus, .field textarea:focus, .input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+  .field input:focus, .field select:focus, .field textarea:focus, .input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--black); }
   .full { grid-column: 1 / -1; }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-  .btn { border: 0; border-radius: 10px; padding: 12px 20px; font-weight: 600; background: var(--accent); color: #fff; }
+  .btn { border: 0; border-radius: 10px; padding: 12px 20px; font-weight: 700; background: var(--accent); color: var(--accent-ink); }
   .btn:hover:not(:disabled) { background: var(--accent-dark); }
   .btn:disabled { opacity: .6; cursor: default; }
   .btn.secondary { background: var(--bg); color: var(--ink); border: 1px solid var(--line-strong); }
-  .btn.secondary:hover:not(:disabled) { background: var(--soft); }
+  .btn.secondary:hover:not(:disabled) { background: var(--soft); border-color: var(--black); }
   .btn.danger { background: var(--bg); color: var(--err); border: 1px solid #f0c4bf; }
   .btn.small { padding: 7px 12px; font-size: 14px; border-radius: 8px; }
   .alert { border-radius: 8px; padding: 10px 12px; margin: 12px 0 0; font-size: 14px; }
@@ -114,7 +121,7 @@
   .privacy { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
 
   .done { text-align: center; padding: 32px 22px; }
-  .done .check { width: 52px; height: 52px; border-radius: 50%; background: var(--ok-soft); color: var(--ok); display: inline-flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 10px; }
+  .done .check { width: 52px; height: 52px; border-radius: 50%; background: var(--black); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 10px; }
 
   /* Schedules */
   .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 14px; }
@@ -150,6 +157,7 @@
   @media (max-width: 600px) {
     .wrap { padding: 18px 16px 40px; }
     h1 { font-size: 22px; }
+    .brand { padding: 18px 18px 16px; }
     .card { padding: 16px; }
     .dow, .grid { gap: 5px; }
     .day { font-size: 14px; border-radius: 7px; }
@@ -161,14 +169,18 @@
     .choices { grid-template-columns: 1fr 1fr; }
     .tab { margin-right: 4px; padding: 10px 4px; }
     .tab .long { display: none; }
+    .tab .short { display: inline; }
     .tabs { gap: 10px; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1 id="company">First Sight Inspections</h1>
-  <p class="lede">Pick a date and time, and we'll show you which inspector is available — and where they're already working that day.</p>
+  <header class="brand">
+    <p class="eyebrow">Schedule an inspection</p>
+    <h1 id="company">First Sight Inspections</h1>
+    <p class="lede">Pick a date and time, and we'll show you which inspector is available — and where they're already working that day.</p>
+  </header>
 
   <div id="demo-banner" class="demo-banner" hidden>
     Demo mode — sample data only, nothing is saved. Inspector view access keys: <b>demo-key-a</b> or <b>demo-key-b</b>.
@@ -176,7 +188,7 @@
 
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" data-tab="book" aria-selected="true">Book<span class="long"> an inspection</span></button>
-    <button class="tab" role="tab" data-tab="public" aria-selected="false"><span class="long">Public </span>Schedule</button>
+    <button class="tab" role="tab" data-tab="public" aria-selected="false"><span class="long">Public schedule</span><span class="short">Schedule</span></button>
     <button class="tab" role="tab" data-tab="inspector" aria-selected="false">Inspector<span class="long"> view</span></button>
   </nav>
 
@@ -539,9 +551,9 @@
     $('#time-choices').innerHTML = S.boot.slots.map(slot => {
       const offered = day.slots[slot] !== undefined;
       const n = offered ? freeFor(day, slot).length : 0;
-      const sub = !offered ? 'Not available' : n ? (S.filter ? 'Available' : `${n} inspector${n > 1 ? 's' : ''} available`) : 'Booked';
-      return `<button class="choice" data-time="${slot}" ${n ? '' : 'disabled'} aria-pressed="false">
-                <span class="big">${t12(slot)} – ${t12(endOf(slot))}</span><span class="sub">${sub}</span></button>`;
+      const sub = !offered ? 'Not available' : n ? (S.filter ? 'Available' : `${n} available`) : 'Booked';
+      return `<button class="choice" data-time="${slot}" ${n ? '' : 'disabled'} aria-pressed="false" aria-label="${t12(slot)} to ${t12(endOf(slot))}, ${sub}">
+                <span class="big">${t12(slot)}</span><span class="sub">to ${t12(endOf(slot))}</span><span class="sub">${sub}</span></button>`;
     }).join('');
     show('#step-time', true);
     if (!keepScroll) $('#step-time').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -913,7 +925,7 @@
       defaultState: 'MD'
     };
     const inspectors = [
-      { id: 'inspector-a', name: 'Inspector A', color: '#2563eb', key: 'demo-key-a' },
+      { id: 'inspector-a', name: 'Inspector A', color: '#1d4ed8', key: 'demo-key-a' },
       { id: 'inspector-b', name: 'Inspector B', color: '#0f8a6a', key: 'demo-key-b' }
     ];
     const now = new Date();

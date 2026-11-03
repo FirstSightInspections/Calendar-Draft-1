@@ -111,4 +111,5 @@ var BOOKING_COLUMNS = [
 
 var INSPECTOR_COLUMNS = ['ID', 'Name', 'Email', 'Private Calendar ID', 'Color', 'Access Key', 'Active'];
 
-var INSPECTOR_COLORS = ['#2563eb', '#0f8a6a', '#9333ea', '#c2410c', '#0e7490', '#be123c'];
+// Inspector dot colors (kept away from amber so they never look like a selection).
+var INSPECTOR_COLORS = ['#1d4ed8', '#0f8a6a', '#9333ea', '#0e7490', '#be123c', '#4b5563'];
