@@ -11,6 +11,7 @@ var PROP_PUBLIC_CALENDAR_ID = 'PUBLIC_CALENDAR_ID';
 var TAG_BOOKING = 'fsi_booking';
 var TAG_INSPECTOR = 'fsi_inspector';
 var TAG_CITY = 'fsi_city';
+var TAG_STATE = 'fsi_state';
 
 /* ------------------------------------------------------------------ */
 /* Dates                                                               */
@@ -235,7 +236,8 @@ function publicEntries_(start, end) {
         endTime: fmt_(ev.getEndTime(), 'HH:mm'),
         inspectorId: ev.getTag(TAG_INSPECTOR),
         inspectorName: insp ? insp.name : 'Inspector',
-        city: ev.getTag(TAG_CITY) || ''
+        city: ev.getTag(TAG_CITY) || '',
+        state: ev.getTag(TAG_STATE) || ((ev.getLocation() || '').split(',')[1] || '').trim()
       };
     });
 }
@@ -282,6 +284,7 @@ function createPublicEvent_(inspector, b, start, end) {
   ev.setTag(TAG_BOOKING, b.bookingId);
   ev.setTag(TAG_INSPECTOR, inspector.id);
   ev.setTag(TAG_CITY, b.city);
+  ev.setTag(TAG_STATE, b.state || '');
   return ev;
 }
 

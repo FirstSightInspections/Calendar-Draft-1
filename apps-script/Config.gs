@@ -33,6 +33,8 @@ var CONFIG = {
   // How far ahead clients can book.
   HORIZON_DAYS: 60,
 
+  // States clients can choose on the form (shown as the label on booked days).
+  STATES: ['MD', 'PA', 'VA'],
   DEFAULT_STATE: 'MD',
 
   // Drop-down choices on the booking form.

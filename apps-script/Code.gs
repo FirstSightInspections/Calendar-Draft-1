@@ -32,6 +32,7 @@ function getBootstrap() {
     tasks: CONFIG.TASKS,
     lossTypes: CONFIG.LOSS_TYPES,
     roles: CONFIG.ATTENDING_ROLES,
+    states: CONFIG.STATES,
     defaultState: CONFIG.DEFAULT_STATE,
     inspectors: activeInspectors_().map(publicInspector_)
   };
@@ -271,6 +272,7 @@ function toClientBooking_(b, me) {
     inspectorId: String(b.inspectorId),
     inspectorName: insp ? insp.name : String(b.inspectorName),
     city: String(b.city),
+    state: String(b.state || ''),
     mine: String(b.inspectorId) === me.id
   };
   if (!CONFIG.INSPECTORS_SEE_ALL_DETAILS && !base.mine) {
@@ -324,7 +326,7 @@ function validateBooking_(p) {
     attendingPhone: required(p.attendingPhone, 'Attending phone', 30),
     street: required(p.street, 'Street address', 160),
     city: titleCase(required(p.city, 'City', 60)),
-    state: required(p.state, 'State', 20).toUpperCase(),
+    state: oneOf(String(p.state || '').toUpperCase(), CONFIG.STATES, 'state'),
     filledBy: required(p.filledBy, '"Form filled out by"'),
     contactEmail: required(p.contactEmail, 'Contact email', 160).toLowerCase(),
     notes: String(p.notes == null ? '' : p.notes).trim().slice(0, 2000)

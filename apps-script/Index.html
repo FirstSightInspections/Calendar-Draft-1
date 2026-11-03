@@ -75,8 +75,8 @@
   .day.today .num { text-decoration: underline; text-underline-offset: 3px; }
   .day[aria-pressed="true"], .day[aria-pressed="true"]:hover:not(:disabled) { background: var(--accent); border-color: var(--black); color: var(--accent-ink); font-weight: 700; }
   .day[aria-pressed="true"] .hint { color: var(--accent-ink); }
-  .day .dots { display: flex; gap: 3px; height: 7px; }
-  .day .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .day .states { display: flex; gap: 3px; min-height: 16px; }
+  .st { display: inline-block; font-size: 10.5px; font-weight: 700; line-height: 1; letter-spacing: .04em; padding: 3px 4px; border-radius: 4px; background: var(--black); color: var(--accent); }
   .day .hint { font-size: 10.5px; line-height: 1.1; color: var(--muted); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .blank { aspect-ratio: 1 / 1; }
   .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; font-size: 12.5px; color: var(--muted); }
@@ -262,7 +262,7 @@
           <div class="grid2">
             <div class="field full"><label>Street address <span class="req">*</span><input name="street" required autocomplete="address-line1"></label></div>
             <div class="field"><label>City <span class="req">*</span><input name="city" required autocomplete="address-level2"></label></div>
-            <div class="field"><label>State <span class="req">*</span><input name="state" required maxlength="20" autocomplete="address-level1"></label></div>
+            <div class="field"><label>State <span class="req">*</span><select name="state" required autocomplete="address-level1"></select></label></div>
           </div>
         </fieldset>
         <fieldset>
@@ -476,15 +476,15 @@
       const day = days[s];
       const open = day ? Object.keys(day.slots).filter(slot => freeFor(day, slot).length).length : 0;
       const sched = (day && day.schedule) || [];
-      const insps = [...new Set(sched.map(e => e.inspectorId))];
+      const states = [...new Set(sched.map(e => e.state).filter(Boolean))];
       const cities = [...new Set(sched.map(e => e.city))];
       const title = open
-        ? `${longDate(s)}: ${open} time${open > 1 ? 's' : ''} open` + (cities.length ? `. Inspectors in ${cities.join(', ')}` : '')
+        ? `${longDate(s)}: ${open} time${open > 1 ? 's' : ''} open` + (cities.length ? `. Already booked in ${sched.map(placeOf).filter((v, i, a) => a.indexOf(v) === i).join(', ')}` : '')
         : `${longDate(s)}: unavailable`;
       html += `<button class="day${s === S.boot.today ? ' today' : ''}" data-date="${s}" ${open ? '' : 'disabled'}
                  aria-pressed="${s === S.date}" title="${esc(title)}" aria-label="${esc(title)}">
                  <span class="num">${d}</span>
-                 <span class="dots">${insps.map(id => `<i class="dot" style="background:${esc(inspColor(id))}"></i>`).join('')}</span>
+                 <span class="states">${states.map(st => `<b class="st">${esc(st)}</b>`).join('')}</span>
                  ${cities.length ? `<span class="hint">${esc(cities[0])}${cities.length > 1 ? ' +' + (cities.length - 1) : ''}</span>` : ''}
                </button>`;
     }
@@ -494,10 +494,10 @@
   // One inspector: no "choose your inspector" step, no inspector filters.
   const solo = () => S.boot.inspectors.length === 1;
 
+  const placeOf = e => e.state ? `${e.city}, ${e.state}` : e.city;
+
   function renderLegend(el) {
-    $(el).innerHTML = S.boot.inspectors.map(i =>
-      `<span><i class="dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${esc(i.color)}"></i>${solo() ? 'Already booked that day — city shown' : esc(i.name) + ' already booked nearby'}</span>`
-    ).join('');
+    $(el).innerHTML = `<span><b class="st">MD</b> State ${solo() ? 'I\'m' : 'an inspector is'} already booked in that day</span>`;
   }
 
   function gotoMonth(n) {
@@ -543,7 +543,7 @@
     if (!rows.length) return '';
     return `<div class="nearby"><b>Already in the area that day</b><ul>${rows.map(e =>
       `<li><span class="chip"><i style="background:${esc(inspColor(e.inspectorId))}"></i>${esc(e.inspectorName)}</span>
-       ${esc(e.city)} · ${esc(t12(e.time))}</li>`).join('')}</ul></div>`;
+       ${esc(placeOf(e))} · ${esc(t12(e.time))}</li>`).join('')}</ul></div>`;
   }
 
   function selectDate(s, keepScroll) {
@@ -583,7 +583,7 @@
     $('#insp-choices').innerHTML = free.map(id => {
       const mine = (day.schedule || []).filter(e => e.inspectorId === id);
       const where = mine.length
-        ? 'Already in ' + mine.map(e => `${esc(e.city)} at ${esc(t12(e.time))}`).join(', ') + ' that day'
+        ? 'Already in ' + mine.map(e => `${esc(placeOf(e))} at ${esc(t12(e.time))}`).join(', ') + ' that day'
         : 'Open day — no other jobs yet';
       return `<button class="choice insp-choice" data-insp="${esc(id)}" aria-pressed="false">
                 <i class="swatch" style="background:${esc(inspColor(id))}"></i>
@@ -693,7 +693,7 @@
                 ${canBook ? `<button class="btn secondary small" data-book="${s}">Book this day</button>` : '<span class="muted small">Fully booked</span>'}</div>
                 ${entries.map(e => `<div class="entry"><span class="time">${esc(t12(e.time))}</span>
                   <span class="chip"><i style="background:${esc(inspColor(e.inspectorId))}"></i>${esc(e.inspectorName)}</span>
-                  <span>${esc(e.city)}</span></div>`).join('')}</div>`;
+                  <span>${esc(placeOf(e))}</span></div>`).join('')}</div>`;
     }).join('');
     list.innerHTML = rows || '<div class="empty">No inspections on the schedule for this month yet — plenty of open days!</div>';
   }
@@ -809,7 +809,7 @@
 
   function jobHtml(b) {
     const chip = `<span class="chip"><i style="background:${esc(inspColor(b.inspectorId))}"></i>${esc(b.inspectorName)}${b.mine ? ' (you)' : ''}</span>`;
-    const head = `<span class="time" style="min-width:70px;color:var(--muted)">${esc(t12(b.time))}</span>${chip}<b>${esc(b.city)}</b>`;
+    const head = `<span class="time" style="min-width:70px;color:var(--muted)">${esc(t12(b.time))}</span>${chip}<b>${esc(placeOf(b))}</b>`;
     if (b.redacted) {
       return `<div class="entry" style="padding:10px 14px;border:1px solid var(--line);border-radius:10px;margin:8px 0">${head}
                 <span class="muted small">Details visible to ${esc(b.inspectorName)} only</span></div>`;
@@ -920,6 +920,7 @@
       fillSelect(f.task, cfg.tasks, 'Select…');
       fillSelect(f.lossType, cfg.lossTypes, 'Select…');
       fillSelect(f.attendingRole, cfg.roles, 'Select…');
+      fillSelect(f.state, cfg.states);
       f.state.value = cfg.defaultState || '';
       renderLegend('#cal-legend');
 
@@ -956,6 +957,7 @@
       tasks: ['Adjuster Meet', 'Reinspection', 'Solo Inspection', 'Engineer Meet', 'ITEL', 'Attempt to Repair', 'Tarp'],
       lossTypes: ['Hail & Wind', 'Wind', 'Hail', 'Fire', 'Water', 'Other'],
       roles: ['Field Adjuster', 'Engineer', 'Ladder Assist', 'Other'],
+      states: ['MD', 'PA', 'VA'],
       defaultState: 'MD'
     };
     const inspectors = [
@@ -970,12 +972,13 @@
     const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
     const pick = a => a[Math.floor(rnd() * a.length)];
     const regions = [
-      ['Frederick', 'Middletown', 'Walkersville', 'Urbana'],
-      ['Bel Air', 'Aberdeen', 'Fallston', 'Abingdon'],
-      ['Towson', 'Parkville', 'Lutherville', 'Cockeysville'],
-      ['Columbia', 'Ellicott City', 'Laurel', 'Clarksville'],
-      ['Hagerstown', 'Boonsboro', 'Smithsburg'],
-      ['Annapolis', 'Severna Park', 'Arnold']
+      ['MD', ['Frederick', 'Middletown', 'Walkersville', 'Urbana']],
+      ['MD', ['Bel Air', 'Aberdeen', 'Fallston', 'Abingdon']],
+      ['MD', ['Towson', 'Columbia', 'Ellicott City', 'Laurel']],
+      ['MD', ['Hagerstown', 'Boonsboro', 'Smithsburg']],
+      ['PA', ['Gettysburg', 'Hanover', 'York', 'Chambersburg']],
+      ['PA', ['Lancaster', 'Red Lion', 'Shrewsbury']],
+      ['VA', ['Leesburg', 'Winchester', 'Purcellville', 'Ashburn']]
     ];
     const first = ['Maria', 'James', 'Linda', 'Robert', 'Patricia', 'David', 'Karen', 'Thomas', 'Susan', 'Kevin', 'Angela', 'Brian'];
     const last = ['Alvarez', 'Bennett', 'Coleman', 'Dawson', 'Ellis', 'Foster', 'Grant', 'Hughes', 'Jensen', 'Keller', 'Morales', 'Nguyen'];
@@ -999,14 +1002,14 @@
         }
         slots.forEach(slot => {
           const name = `${pick(first)} ${pick(last)}`;
-          const city = pick(region);
+          const city = pick(region[1]);
           const co = pick(companies);
           bookings.push({
             id: 'FSI-' + (counter++), status: 'Booked', date: s, time: slot, inspectorId: insp.id, city,
             clientName: name, task: pick(cfg.tasks), lossType: pick(['Hail & Wind', 'Hail & Wind', 'Wind', 'Water', 'Fire']),
             attendingName: `${pick(first)} ${pick(last)}`, attendingRole: pick(cfg.roles.slice(0, 3)),
             attendingPhone: `(410) 555-${String(1000 + Math.floor(rnd() * 8999))}`,
-            street: `${100 + Math.floor(rnd() * 9800)} ${pick(streets)}`, state: 'MD',
+            street: `${100 + Math.floor(rnd() * 9800)} ${pick(streets)}`, state: region[0],
             filledBy: `${pick(first)} at ${co}`, contactEmail: `scheduling@${co.toLowerCase().replace(/[^a-z]/g, '')}.example`,
             notes: rnd() < 0.4 ? pick(['Gate code 4410. Dog in backyard.', 'Interior water damage in 2nd floor bath.', 'Homeowner works nights — call before 10am.', 'Ladder assist needed, steep roof.']) : '',
             submitted: '', lastChange: ''
@@ -1050,7 +1053,7 @@
           });
           // Public view: ONLY time / inspector / city.
           day.schedule = live().filter(b => b.date === s).sort((a, b) => a.time.localeCompare(b.time))
-            .map(b => ({ date: s, time: b.time, endTime: endT(b.time), inspectorId: b.inspectorId, inspectorName: insp(b.inspectorId).name, city: b.city }));
+            .map(b => ({ date: s, time: b.time, endTime: endT(b.time), inspectorId: b.inspectorId, inspectorName: insp(b.inspectorId).name, city: b.city, state: b.state }));
           days[s] = day;
         }
         return delay({ days });
