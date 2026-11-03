@@ -127,6 +127,11 @@
   .svc p { margin: 0; color: var(--muted); font-size: 15px; }
   .svc .book-it { justify-self: start; background: none; border: 0; padding: 0; margin-top: 4px; color: var(--accent-text); font-weight: 700; font-size: 14px; }
   .svc .book-it:hover { text-decoration: underline; }
+  .svc ul { margin: 2px 0 0; padding-left: 18px; color: var(--ink); font-size: 14.5px; display: grid; gap: 3px; }
+  .svc .note { font-size: 13.5px; font-weight: 600; color: var(--accent-text); }
+  .area-list { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px 16px; }
+  .area-list li { padding-left: 16px; position: relative; }
+  .area-list li::before { content: ""; position: absolute; left: 0; top: .6em; width: 7px; height: 7px; background: var(--accent); border-radius: 2px; }
   .tags { display: flex; gap: 8px; flex-wrap: wrap; }
   .tag { border: 1px solid var(--line-strong); border-radius: 999px; padding: 5px 14px; font-weight: 600; font-size: 14.5px; background: var(--bg); }
   .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; }
@@ -341,17 +346,17 @@
     <div class="dark hero">
       <div class="container hero-grid">
         <div>
-          <p class="eyebrow">Insurance claim inspections · MD · PA · VA</p>
+          <p class="eyebrow">Specializing in home &amp; insurance inspections</p>
           <h1>Damage documented <em>right the first time.</em></h1>
-          <p class="lead">Property inspections for contractors and public adjusters. Pick a day I'm already working near your job, and get the documentation your claim needs from the first visit.</p>
+          <p class="lead">Reliable on-site inspections, ladder assists, roof assessments and detailed property documentation throughout Maryland and surrounding regions. Pick a day I'm already working near your property.</p>
           <div class="hero-actions">
             <button class="btn" data-go="book">Book an inspection</button>
             <button class="btn ghost" data-go="services">See services</button>
           </div>
           <div class="facts">
-            <div class="fact"><b id="fact-states">MD · PA · VA</b><span>Service area</span></div>
+            <div class="fact"><b>Joppa, MD</b><span>Home base, Harford County</span></div>
+            <div class="fact"><b>We come to you</b><span>Mobile field service</span></div>
             <div class="fact"><b>8 AM – 5 PM</b><span>Start times every 30 min</span></div>
-            <div class="fact"><b id="fact-services">7 services</b><span>From adjuster meets to tarps</span></div>
           </div>
         </div>
         <aside class="road" aria-labelledby="road-title">
@@ -378,7 +383,7 @@
     <div class="band soft">
       <div class="container">
         <div class="section-head">
-          <div><p class="eyebrow">Services</p><h2>What I do on site</h2></div>
+          <div><p class="eyebrow">Services</p><h2>Inspect, document, measure, report</h2></div>
           <button class="btn secondary" data-go="services">All services</button>
         </div>
         <div class="svc-grid" id="home-svc"></div>
@@ -398,8 +403,8 @@
     <div class="dark page-head">
       <div class="container">
         <p class="eyebrow">Services</p>
-        <h1>Inspections for insurance claims</h1>
-        <p>I work for contractors and public adjusters, not insurance carriers. Every visit is documented so your claim has what it needs.</p>
+        <h1>Field inspections &amp; documentation</h1>
+        <p>Insurance field inspections, ladder assists, roof assessments and detailed property documentation. I inspect, document, measure, photograph and report. I don't approve claims, promise coverage or set settlement amounts.</p>
       </div>
     </div>
     <div class="band">
@@ -410,8 +415,13 @@
     <div class="band soft">
       <div class="container split">
         <div><h3>Loss types</h3><div class="tags" id="loss-tags"></div></div>
-        <div><h3>Service area</h3><div class="tags" id="area-tags"></div>
-          <p class="muted" style="margin:14px 0 0">The booking calendar shows which state I'm already working in each day.</p></div>
+        <div><h3>Service area</h3>
+          <p style="margin:0 0 12px">Based in Joppa, Maryland. Mobile, so there's no office to visit: I travel to the property.</p>
+          <ul class="area-list">
+            <li>Harford County, MD</li><li>Baltimore County &amp; Baltimore City</li><li>Cecil County, MD</li>
+            <li>The rest of Maryland</li><li>Southern &amp; Central Pennsylvania</li><li>Delaware</li><li>New Jersey</li>
+          </ul>
+          <p class="muted" style="margin:12px 0 0">Assignments outside these areas are welcome. The booking calendar shows which state I'm already working in each day.</p></div>
       </div>
     </div>
   </section>
@@ -424,13 +434,13 @@
         <div class="about-copy">
           <p class="eyebrow">About</p>
           <h2>Hi, I'm Ross.</h2>
-          <p>First Sight Inspections is my company. I inspect properties for insurance claims on behalf of contractors and public adjusters across Maryland, Pennsylvania and Virginia.</p>
-          <p>I don't work for the insurance carriers. My job is to document the damage clearly and completely, so the people I work for have what they need from the first visit.</p>
-          <p>My schedule fills up, so I built this booking page to make it easy: you can see where I'm already working and grab a time that fits.</p>
+          <p>First Sight Inspections, LLC is an independent property inspection and field services company based in Joppa, Maryland, in Harford County.</p>
+          <p>I'm not a roofing contractor or an adjusting company. My job is to inspect, document, measure, photograph and report property conditions accurately, thoroughly and on time, so the people I work with can make informed decisions.</p>
+          <p>It's a mobile business: I travel to every property, often several in a day across different counties and states. That's why this booking page shows where I'm already working, so you can pick a day that fits the route.</p>
           <div class="creds">
-            <div class="cred"><b>Contractors</b><span>Roofing, exterior and restoration companies</span></div>
-            <div class="cred"><b>Public adjusters</b><span>Claim documentation and adjuster meets</span></div>
-            <div class="cred"><b>MD · PA · VA</b><span>Booked by location to cut travel</span></div>
+            <div class="cred"><b>Adjusters &amp; firms</b><span>Independent adjusters, adjusting firms and inspection vendors</span></div>
+            <div class="cred"><b>Engineers &amp; pros</b><span>Site access, documentation and coordinated visits</span></div>
+            <div class="cred"><b>Property owners</b><span>Inspection and documentation for your home</span></div>
           </div>
           <div style="margin-top:28px"><button class="btn" data-go="book">Book an inspection</button></div>
         </div>
@@ -637,7 +647,7 @@
   <div class="container footer-grid">
     <div>
       <span class="logo-text">First Sight<small>Inspections</small></span>
-      <p>Insurance claim inspections for contractors and public adjusters · MD · PA · VA</p>
+      <p>First Sight Inspections, LLC · Joppa, Maryland · Home &amp; insurance inspections</p>
     </div>
     <div class="footer-links">
       <button data-go="services">Services</button>
@@ -767,37 +777,59 @@
   /* ================================================================
    * Site content: services (edit descriptions here)
    * ================================================================ */
-  const SERVICE_INFO = {
-    'Adjuster Meet': 'I meet the insurance adjuster on site, walk the property together and make sure every damaged area gets seen and documented.',
-    'Solo Inspection': 'A full inspection on my own, documented with photos and notes for your claim file. No adjuster needs to be there.',
-    'Reinspection': 'A return visit when the carrier wants a second look, or when new damage needs to be documented.',
-    'Engineer Meet': 'I attend the engineer\'s inspection, point out the damage and keep a record of what was reviewed.',
-    'ITEL': 'Material samples collected for an ITEL report, so the carrier can match existing shingles or siding.',
-    'Attempt to Repair': 'A documented repair attempt that shows whether damaged materials can actually be repaired or need to be replaced.',
-    'Tarp': 'Emergency tarping to protect the property from more damage until permanent repairs are approved.'
-  };
-  const HOME_SERVICES = ['Adjuster Meet', 'Solo Inspection', 'ITEL', 'Tarp'];
-  const STATE_NAMES = { MD: 'Maryland', PA: 'Pennsylvania', VA: 'Virginia', DE: 'Delaware', WV: 'West Virginia', DC: 'Washington, DC' };
+  // `task` = which booking-form task to preselect when someone books from this card.
+  const SERVICES = [
+    { name: 'Insurance Field Inspections', task: 'Solo Inspection', cta: 'Book an inspection',
+      desc: 'On-site inspections that give adjusters and insurance professionals clear, accurate documentation of the property.',
+      points: ['Exterior, roof and interior inspections', 'Hail, wind and collateral damage', 'Measurements and detailed photos', 'Inspection reports'] },
+    { name: 'Ladder Assist', task: '', cta: 'Request a ladder assist',
+      desc: 'Roof access and ladder support for adjusters, inspectors, engineers and other authorized professionals.',
+      points: ['Ladder setup and repositioning', 'Two- and three-story rooflines, where conditions permit', 'Steep roofs with proper safety equipment', 'Roof photos, measurements and damage documentation'] },
+    { name: 'Roof Inspections', task: 'Solo Inspection', cta: 'Book a roof inspection',
+      desc: 'Detailed documentation of the roof system and its visible condition.',
+      points: ['Covering type, pitch and shingle exposure', 'Layers, drip edge and underlayment, where observable', 'Valleys, flashing, pipe boots and ridge vents', 'Shingle gauge measurements and damage close-ups'] },
+    { name: 'Storm Damage Inspections', task: 'Solo Inspection', cta: 'Book a storm inspection',
+      desc: 'Hail, wind, fallen trees and water intrusion, documented in both affected and unaffected areas.',
+      points: ['Roof, siding, gutters and downspouts', 'Soft metals and other exterior components', 'Interior damage from storm events'] },
+    { name: 'Interior Inspections', task: 'Solo Inspection', cta: 'Book an interior inspection',
+      desc: 'Room-by-room documentation of interior damage.',
+      points: ['Overview, intermediate and close-up photos', 'Room, wall and ceiling measurements', 'Door and window openings', 'Room sketches and damage location diagrams'] },
+    { name: 'Exterior Elevations', task: 'Solo Inspection', cta: 'Book an exterior inspection',
+      desc: 'All four elevations documented with photos, measurements and observations.',
+      points: ['Front, right, rear and left elevations', 'Siding, trim, fascia and soffit', 'Gutters, downspouts, window wraps and screens', 'Vents and other exterior components'] },
+    { name: 'Adjuster & Engineer Meetings', task: 'Adjuster Meet', cta: 'Book a meeting',
+      desc: 'I attend scheduled inspections with adjusters, engineers, inspection vendors and other authorized professionals.',
+      points: ['Roof access and field assistance', 'Photos and measurements during the visit'] },
+    { name: 'ITEL Material Sampling', task: 'ITEL', cta: 'Book ITEL sampling',
+      desc: 'Field collection and documentation of material samples for identification testing, including mobile ITEL workflows when requested.',
+      points: [] },
+    { name: 'Reinspections & Repair Attempts', task: 'Reinspection', cta: 'Book a reinspection',
+      desc: 'Return visits for a second look, and documented repair attempts when an assignment calls for one.',
+      points: [] },
+    { name: 'Emergency Tarping', task: 'Tarp', request: true, cta: 'Request tarping',
+      desc: 'Emergency roof tarping and temporary weather protection when the job is safe and appropriate.',
+      points: [], note: 'By request: I\'ll confirm whether I can take it on.' }
+  ];
+  const HOME_SERVICES = ['Insurance Field Inspections', 'Ladder Assist', 'Roof Inspections', 'Storm Damage Inspections'];
 
-  function svcCard(name) {
-    return `<article class="svc"><div class="svc-top"><h3>${esc(name)}</h3></div>
-      <p>${esc(SERVICE_INFO[name] || 'Ask me about this service when you book.')}</p>
-      <button class="book-it" data-task="${esc(name)}">Book ${esc(name)} →</button></article>`;
+  function svcCard(svc) {
+    const task = S.boot.tasks.includes(svc.task) ? svc.task : '';
+    return `<article class="svc"><div class="svc-top"><h3>${esc(svc.name)}</h3></div>
+      <p>${esc(svc.desc)}</p>
+      ${svc.points.length ? `<ul>${svc.points.map(pt => `<li>${esc(pt)}</li>`).join('')}</ul>` : ''}
+      ${svc.note ? `<p class="note">${esc(svc.note)}</p>` : ''}
+      <button class="book-it" data-task="${esc(task)}">${esc(svc.cta)} →</button></article>`;
   }
   function renderSite() {
-    const tasks = S.boot.tasks;
-    $('#svc-grid').innerHTML = tasks.map(svcCard).join('');
-    $('#home-svc').innerHTML = HOME_SERVICES.filter(t => tasks.includes(t)).map(svcCard).join('');
+    $('#svc-grid').innerHTML = SERVICES.map(svcCard).join('');
+    $('#home-svc').innerHTML = SERVICES.filter(x => HOME_SERVICES.includes(x.name)).map(svcCard).join('');
     $('#loss-tags').innerHTML = S.boot.lossTypes.filter(l => l !== 'Other').map(l => `<span class="tag">${esc(l)}</span>`).join('');
-    $('#area-tags').innerHTML = S.boot.states.map(st => `<span class="tag"><b class="st">${esc(st)}</b> ${esc(STATE_NAMES[st] || st)}</span>`).join('');
-    $('#fact-states').textContent = S.boot.states.join(' · ');
-    $('#fact-services').textContent = `${tasks.length} services`;
   }
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-task]');
     if (!b) return;
     S.prefTask = b.dataset.task;
-    $('#booking-form').task.value = S.prefTask;
+    if (S.prefTask) $('#booking-form').task.value = S.prefTask;
     setView('book');
   });
 
@@ -1370,7 +1402,7 @@
       tasks: ['Adjuster Meet', 'Reinspection', 'Solo Inspection', 'Engineer Meet', 'ITEL', 'Attempt to Repair', 'Tarp'],
       lossTypes: ['Hail & Wind', 'Wind', 'Hail', 'Fire', 'Water', 'Other'],
       roles: ['Field Adjuster', 'Engineer', 'Ladder Assist', 'Other'],
-      states: ['MD', 'PA', 'VA'],
+      states: ['MD', 'PA', 'DE', 'NJ', 'VA'],
       defaultState: 'MD'
     };
     const inspectors = [
@@ -1391,6 +1423,9 @@
       ['MD', ['Hagerstown', 'Boonsboro', 'Smithsburg']],
       ['PA', ['Gettysburg', 'Hanover', 'York', 'Chambersburg']],
       ['PA', ['Lancaster', 'Red Lion', 'Shrewsbury']],
+      ['MD', ['Joppa', 'Edgewood', 'Abingdon', 'Bel Air']],
+      ['MD', ['Elkton', 'North East', 'Rising Sun']],
+      ['DE', ['Newark', 'Wilmington', 'Middletown']],
       ['VA', ['Leesburg', 'Winchester', 'Purcellville', 'Ashburn']]
     ];
     const first = ['Maria', 'James', 'Linda', 'Robert', 'Patricia', 'David', 'Karen', 'Thomas', 'Susan', 'Kevin', 'Angela', 'Brian'];

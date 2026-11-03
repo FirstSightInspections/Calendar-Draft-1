@@ -34,7 +34,7 @@ var CONFIG = {
   HORIZON_DAYS: 60,
 
   // States clients can choose on the form (shown as the label on booked days).
-  STATES: ['MD', 'PA', 'VA'],
+  STATES: ['MD', 'PA', 'DE', 'NJ', 'VA'],
   DEFAULT_STATE: 'MD',
 
   // Drop-down choices on the booking form.
