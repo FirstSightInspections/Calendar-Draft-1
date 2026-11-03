@@ -132,6 +132,14 @@
   .area-list { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px 16px; }
   .area-list li { padding-left: 16px; position: relative; }
   .area-list li::before { content: ""; position: absolute; left: 0; top: .6em; width: 7px; height: 7px; background: var(--accent); border-radius: 2px; }
+  .sides { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+  .side { border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 12px; padding: 22px 24px; }
+  .side h3 { font-size: 27px; text-transform: uppercase; margin-bottom: 8px; }
+  .side p { margin: 0; color: var(--muted); }
+  .contact { display: grid; gap: 6px; margin-top: 26px; padding: 18px 20px; background: var(--soft); border-radius: 12px; border-left: 4px solid var(--accent); }
+  .contact b { font-family: var(--display); font-size: 20px; text-transform: uppercase; letter-spacing: .03em; }
+  .contact a { font-weight: 600; font-size: 18px; text-decoration: none; }
+  .contact a:hover { text-decoration: underline; }
   .tags { display: flex; gap: 8px; flex-wrap: wrap; }
   .tag { border: 1px solid var(--line-strong); border-radius: 999px; padding: 5px 14px; font-weight: 600; font-size: 14.5px; background: var(--bg); }
   .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; }
@@ -242,9 +250,9 @@
 
   /* ---------- Schedules ---------- */
   .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .agenda-day { padding: 14px 0; border-top: 1px solid var(--line); }
+  .agenda-day { scroll-margin-top: 90px; padding: 14px 0; border-top: 1px solid var(--line); }
   .agenda-day:first-child { border-top: 0; padding-top: 0; }
-  .agenda-date { font-family: var(--display); font-weight: 700; font-size: 20px; text-transform: uppercase; letter-spacing: .02em; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .agenda-date { font-family: var(--display); font-weight: 700; font-size: 20px; text-transform: uppercase; letter-spacing: .02em; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 4px 10px; flex-wrap: wrap; }
   .entry { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 15px; flex-wrap: wrap; }
   .entry .time { min-width: 76px; color: var(--muted); font-variant-numeric: tabular-nums; }
   .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; border-radius: 999px; padding: 2px 10px 2px 8px; background: var(--soft); border: 1px solid var(--line); color: var(--ink); }
@@ -266,10 +274,17 @@
   .confirm-box p { margin: 0; }
   .confirm-box .row { display: flex; gap: 8px; flex-wrap: wrap; }
   .mini-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-bottom: 16px; }
-  .mini-day { border: 1px solid var(--line); border-radius: 6px; min-height: 52px; padding: 4px; font-size: 12px; background: var(--bg); text-align: left; display: flex; flex-direction: column; gap: 3px; }
+  .mini-day { border: 1px solid var(--line); border-radius: 6px; min-height: 96px; padding: 5px; font-size: 12px; background: var(--bg); text-align: left; display: flex; flex-direction: column; gap: 3px; min-width: 0; overflow: hidden; }
+  .mini-day:hover { border-color: var(--black); }
   .mini-day.off { background: #fbfaf8; color: #c0bdb5; }
-  .mini-day .bars { display: flex; flex-direction: column; gap: 2px; }
-  .mini-day .bar { height: 5px; border-radius: 3px; }
+  .mini-day.today { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .mini-day .dnum { font-family: var(--display); font-weight: 700; font-size: 16px; line-height: 1; }
+  .mini-day .mj { display: block; font-size: 11.5px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 3px solid var(--accent); padding-left: 4px; }
+  .mini-day .mj b { font-weight: 700; }
+  .mini-day .mstates { display: none; gap: 2px; flex-wrap: wrap; }
+  .mini-day .more { font-size: 11px; color: var(--muted); }
+  .route { font-family: var(--font); text-transform: none; letter-spacing: 0; font-size: 14px; font-weight: 700; color: var(--accent-text); text-decoration: none; white-space: nowrap; }
+  .route:hover { text-decoration: underline; }
   .mini-dow { text-align: center; font-size: 11px; color: var(--muted); }
   .whoami { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
@@ -278,6 +293,8 @@
   .footer-grid { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
   .footer .logo-text { font-size: 22px; }
   .footer p { color: var(--on-dark-muted); margin: 8px 0 0; }
+  .footer p a { color: var(--on-dark); text-decoration: none; }
+  .footer p a:hover { text-decoration: underline; }
   .footer-links { display: flex; gap: 6px 18px; flex-wrap: wrap; }
   .footer-links button { background: none; border: 0; padding: 0; color: var(--on-dark-muted); font-weight: 600; }
   .footer-links button:hover { color: var(--on-dark); }
@@ -299,7 +316,7 @@
     .facts { gap: 18px; }
     .fact b { font-size: 21px; }
     .fact span { font-size: 12.5px; }
-    .steps { grid-template-columns: minmax(0, 1fr); }
+    .steps, .sides { grid-template-columns: minmax(0, 1fr); }
     .step { border-left: 0; border-top: 1px solid var(--line); padding: 20px; }
     .step:first-child { border-top: 0; }
     .panel { padding: 16px; }
@@ -310,7 +327,10 @@
     form .grid2 { grid-template-columns: minmax(0, 1fr); }
     dl.kv { grid-template-columns: minmax(0, 1fr); gap: 0; }
     dl.kv dd { margin-bottom: 8px; }
-    .mini-day { min-height: 40px; }
+    .mini-day { min-height: 54px; padding: 4px 3px; }
+    .mini-day .mj, .mini-day .more { display: none; }
+    .mini-day .mstates { display: flex; }
+    .mini-day .st { font-size: 10px; padding: 2px 3px 1px; }
     .choices { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
     .creds { grid-template-columns: minmax(0, 1fr); }
     .month-nav .label { min-width: 120px; font-size: 19px; }
@@ -370,6 +390,25 @@
     <div class="band">
       <div class="container">
         <div class="section-head">
+          <div><p class="eyebrow">Who I work with</p><h2>Both sides of the claim</h2></div>
+          <p>Independent, accurate documentation no matter who sends the assignment.</p>
+        </div>
+        <div class="sides">
+          <div class="side">
+            <h3>Contractors &amp; public adjusters</h3>
+            <p>Inspections, adjuster meets, ITEL sampling and repair attempts, documented so your claim has what it needs from the first visit.</p>
+          </div>
+          <div class="side">
+            <h3>Insurance carriers, IA firms &amp; vendors</h3>
+            <p>Field inspections, ladder assists and roof documentation for carriers, independent adjusters, adjusting firms and third-party inspection vendors.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="band soft">
+      <div class="container">
+        <div class="section-head">
           <div><p class="eyebrow">How booking works</p><h2>Three steps, about two minutes</h2></div>
         </div>
         <div class="steps">
@@ -380,7 +419,7 @@
       </div>
     </div>
 
-    <div class="band soft">
+    <div class="band">
       <div class="container">
         <div class="section-head">
           <div><p class="eyebrow">Services</p><h2>Inspect, document, measure, report</h2></div>
@@ -419,7 +458,7 @@
           <p style="margin:0 0 12px">Based in Joppa, Maryland. Mobile, so there's no office to visit: I travel to the property.</p>
           <ul class="area-list">
             <li>Harford County, MD</li><li>Baltimore County &amp; Baltimore City</li><li>Cecil County, MD</li>
-            <li>The rest of Maryland</li><li>Southern &amp; Central Pennsylvania</li><li>Delaware</li><li>New Jersey</li>
+            <li>The rest of Maryland</li><li>Southern &amp; Central Pennsylvania</li><li>Delaware</li><li>New Jersey</li><li>Virginia</li>
           </ul>
           <p class="muted" style="margin:12px 0 0">Assignments outside these areas are welcome. The booking calendar shows which state I'm already working in each day.</p></div>
       </div>
@@ -435,12 +474,18 @@
           <p class="eyebrow">About</p>
           <h2>Hi, I'm Ross.</h2>
           <p>First Sight Inspections, LLC is an independent property inspection and field services company based in Joppa, Maryland, in Harford County.</p>
+          <p>I work both sides of the claim: contractors and public adjusters, and insurance carriers, adjusting firms and inspection vendors. Whoever sends the assignment gets the same independent, thorough documentation.</p>
           <p>I'm not a roofing contractor or an adjusting company. My job is to inspect, document, measure, photograph and report property conditions accurately, thoroughly and on time, so the people I work with can make informed decisions.</p>
           <p>It's a mobile business: I travel to every property, often several in a day across different counties and states. That's why this booking page shows where I'm already working, so you can pick a day that fits the route.</p>
           <div class="creds">
-            <div class="cred"><b>Adjusters &amp; firms</b><span>Independent adjusters, adjusting firms and inspection vendors</span></div>
-            <div class="cred"><b>Engineers &amp; pros</b><span>Site access, documentation and coordinated visits</span></div>
-            <div class="cred"><b>Property owners</b><span>Inspection and documentation for your home</span></div>
+            <div class="cred"><b>Contractors &amp; PAs</b><span>Contractors and public adjusters</span></div>
+            <div class="cred"><b>Insurance side</b><span>Carriers, independent adjusters, IA firms and inspection vendors</span></div>
+            <div class="cred"><b>Engineers &amp; owners</b><span>Coordinated site visits and home documentation</span></div>
+          </div>
+          <div class="contact">
+            <b>Contact Ross</b>
+            <a href="tel:+14432101934">443-210-1934</a>
+            <a href="mailto:firstsightinspections1@gmail.com">firstsightinspections1@gmail.com</a>
           </div>
           <div style="margin-top:28px"><button class="btn" data-go="book">Book an inspection</button></div>
         </div>
@@ -628,7 +673,10 @@
               </div>
             </div>
             <div class="toolbar" style="margin-bottom:10px">
-              <select class="compact" id="ins-filter"></select>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <button class="btn secondary small" id="ins-today">Today</button>
+                <select class="compact" id="ins-filter"></select>
+              </div>
               <span class="muted small" id="ins-count"></span>
             </div>
             <div class="mini-dow mini-grid" style="margin-bottom:2px"><div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div></div>
@@ -648,6 +696,7 @@
     <div>
       <span class="logo-text">First Sight<small>Inspections</small></span>
       <p>First Sight Inspections, LLC · Joppa, Maryland · Home &amp; insurance inspections</p>
+      <p><a href="tel:+14432101934">443-210-1934</a> · <a href="mailto:firstsightinspections1@gmail.com">firstsightinspections1@gmail.com</a></p>
     </div>
     <div class="footer-links">
       <button data-go="services">Services</button>
@@ -1178,6 +1227,7 @@
         res.inspectors.filter(i => i.id !== res.me.id).map(i => `<option value="${esc(i.id)}">${esc(i.name)}</option>`).join('');
       $('#ins-filter').value = S.ins.filter;
       show('#ins-filter', res.inspectors.length > 1);
+      show('#ins-legend', res.inspectors.length > 1);
       $('#ins-legend').innerHTML = res.inspectors.map(i =>
         `<span><i class="dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${esc(i.color)}"></i>${esc(i.name)}</span>`).join('');
       show('#insp-login', false); show('#insp-app', true);
@@ -1230,10 +1280,13 @@
       const s = ymd(c.y, c.m, d);
       const list = byDay[s] || [];
       const off = !S.boot.workDays.includes(dow(s));
-      grid += `<button class="mini-day${off ? ' off' : ''}" data-jump="${s}" ${list.length ? '' : 'tabindex="-1"'}
-                 title="${esc(list.map(b => `${t12(b.time)} ${b.inspectorName} — ${b.city}`).join('\n'))}">
-                 <span style="font-weight:${s === S.boot.today ? 700 : 400}">${d}</span>
-                 <span class="bars">${list.map(b => `<i class="bar" style="background:${esc(inspColor(b.inspectorId))}"></i>`).join('')}</span></button>`;
+      const states = [...new Set(list.map(b => b.state).filter(Boolean))];
+      grid += `<button class="mini-day${off ? ' off' : ''}${s === S.boot.today ? ' today' : ''}" data-jump="${s}" ${list.length ? '' : 'tabindex="-1"'}
+                 title="${esc(list.map(b => `${t12(b.time)} ${b.inspectorName} — ${placeOf(b)}`).join('\n'))}">
+                 <span class="dnum">${d}</span>
+                 ${list.slice(0, 3).map(b => `<span class="mj" style="border-left-color:${esc(inspColor(b.inspectorId))}"><b>${esc(short12(b.time))}</b> ${esc(b.city)}${b.state ? ', ' + esc(b.state) : ''}</span>`).join('')}
+                 ${list.length > 3 ? `<span class="more">+${list.length - 3} more</span>` : ''}
+                 <span class="mstates">${states.map(st => `<b class="st">${esc(st)}</b>`).join('')}</span></button>`;
     }
     $('#ins-grid').innerHTML = grid;
 
@@ -1241,9 +1294,20 @@
     const dates = Object.keys(byDay).sort();
     $('#ins-list').innerHTML = dates.length ? dates.map(s => `
       <div class="agenda-day" id="ins-day-${s}">
-        <div class="agenda-date"><span>${esc(longDate(s))}</span><span class="muted small">${byDay[s].length} job${byDay[s].length > 1 ? 's' : ''}</span></div>
+        <div class="agenda-date"><span>${esc(longDate(s))} <span class="muted small" style="font-family:var(--font);text-transform:none;letter-spacing:0">· ${byDay[s].length} job${byDay[s].length > 1 ? 's' : ''}</span></span>${routeLink(byDay[s])}</div>
         ${byDay[s].map(jobHtml).join('')}
       </div>`).join('') : '<div class="empty">No jobs this month.</div>';
+  }
+
+  /* Opens Google Maps with the day's stops in time order (starts from current location). */
+  function routeLink(list) {
+    const stops = list.filter(b => b.address).map(b => b.address);
+    if (!stops.length) return '';
+    const dest = stops[stops.length - 1];
+    const way = stops.slice(0, -1).slice(0, 9);
+    const url = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=' + encodeURIComponent(dest) +
+      (way.length ? '&waypoints=' + encodeURIComponent(way.join('|')) : '');
+    return `<a class="route" href="${esc(url)}" target="_blank" rel="noopener">Route ${stops.length > 1 ? stops.length + ' stops' : ''} in Maps ↗</a>`;
   }
 
   function jobHtml(b) {
@@ -1284,6 +1348,15 @@
   }
 
   $('#ins-filter').addEventListener('change', e => { S.ins.filter = e.target.value; renderPrivate(); });
+  $('#ins-today').addEventListener('click', () => {
+    const [y, m] = parseYmd(S.boot.today);
+    const jump = () => {
+      const keys = S.ins.list.map(b => b.date).filter(d => d >= S.boot.today).sort();
+      const el = keys.length && document.getElementById('ins-day-' + keys[0]);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    if (monthKey(S.ins.cursor) !== ymd(y, m, 1)) { S.ins.cursor = { y, m }; loadPrivate().then(jump); } else jump();
+  });
   $('#ins-prev').addEventListener('click', () => { S.ins.cursor = shiftMonth(S.ins.cursor, -1); loadPrivate(); });
   $('#ins-next').addEventListener('click', () => { S.ins.cursor = shiftMonth(S.ins.cursor, 1); loadPrivate(); });
   $('#ins-grid').addEventListener('click', e => {
