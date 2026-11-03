@@ -146,6 +146,9 @@
   dl.kv dt { color: var(--muted); }
   dl.kv dd { margin: 0; white-space: pre-wrap; word-break: break-word; }
   .job-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding-top: 10px; border-top: 1px dashed var(--line); }
+  .confirm-box { margin-top: 10px; padding: 12px 14px; border: 1px solid var(--black); border-radius: 10px; background: var(--accent-soft); display: grid; gap: 10px; }
+  .confirm-box p { margin: 0; }
+  .confirm-box .row { display: flex; gap: 8px; flex-wrap: wrap; }
   .mini-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 16px; }
   .mini-day { border: 1px solid var(--line); border-radius: 6px; min-height: 52px; padding: 4px; font-size: 12px; background: var(--bg); text-align: left; display: flex; flex-direction: column; gap: 3px; }
   .mini-day.off { background: #fbfaf7; color: #c0bcb2; }
@@ -832,6 +835,7 @@
           <button class="btn secondary small" data-act="reassign">Reassign job</button>
           <button class="btn danger small" data-act="cancel" style="margin-left:auto">Cancel booking</button>
         </div>` : `<div class="job-actions"><button class="btn danger small" data-act="cancel">Cancel booking</button></div>`}
+        <div class="confirm-box" data-role="confirm" hidden></div>
       </div>
     </details>`;
   }
@@ -845,22 +849,46 @@
     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
+  // Reassign / cancel use an in-page confirmation step (no browser pop-ups,
+  // which some embeds and phone browsers block).
   $('#ins-list').addEventListener('click', e => {
     const btn = e.target.closest('[data-act]');
     if (!btn) return;
     const job = btn.closest('details.job');
+    const box = job.querySelector('[data-role="confirm"]');
     const id = job.dataset.id;
     const b = S.ins.list.find(x => x.id === id);
-    let p;
-    if (btn.dataset.act === 'reassign') {
+    const when = `${b.city} on ${dateLabel(b.date)} at ${t12(b.time)}`;
+    const act = btn.dataset.act;
+
+    if (act === 'keep') { box.hidden = true; box.innerHTML = ''; return; }
+    if (act === 'reassign') {
       const to = job.querySelector('[data-role="reassign-to"]').value;
-      if (!confirm(`Move ${b.city} on ${dateLabel(b.date)} at ${t12(b.time)} from ${b.inspectorName} to ${inspName(to)}?`)) return;
-      p = api('reassignBooking', S.ins.key, id, to).then(() => `Job ${id} reassigned to ${inspName(to)}. Both calendars and the public schedule were updated.`);
-    } else {
-      const reason = prompt(`Cancel ${b.city} on ${dateLabel(b.date)} at ${t12(b.time)}?\nOptional reason:`, '');
-      if (reason === null) return;
-      p = api('cancelBooking', S.ins.key, id, reason).then(() => `Booking ${id} cancelled and removed from both calendars.`);
+      box.dataset.to = to;
+      box.innerHTML = `<p>Move <b>${esc(when)}</b> from ${esc(b.inspectorName)} to <b>${esc(inspName(to))}</b>?</p>
+        <div class="row"><button class="btn small" data-act="do-reassign">Yes, reassign</button>
+        <button class="btn secondary small" data-act="keep">Keep as is</button></div>`;
+      box.hidden = false;
+      return;
     }
+    if (act === 'cancel') {
+      box.innerHTML = `<p>Cancel <b>${esc(when)}</b>? It will be removed from both calendars.</p>
+        <label class="small">Reason (optional)<input class="input" data-role="reason" maxlength="300"></label>
+        <div class="row"><button class="btn danger small" data-act="do-cancel">Yes, cancel booking</button>
+        <button class="btn secondary small" data-act="keep">Keep booking</button></div>`;
+      box.hidden = false;
+      box.querySelector('input').focus();
+      return;
+    }
+
+    let p;
+    if (act === 'do-reassign') {
+      const to = box.dataset.to;
+      p = api('reassignBooking', S.ins.key, id, to).then(() => `Job ${id} reassigned to ${inspName(to)}. Both calendars and the public schedule were updated.`);
+    } else if (act === 'do-cancel') {
+      const reason = box.querySelector('[data-role="reason"]').value.trim();
+      p = api('cancelBooking', S.ins.key, id, reason).then(() => `Booking ${id} cancelled and removed from both calendars.`);
+    } else return;
     btn.disabled = true;
     p.then(msg => { showAlert('#ins-msg', msg, 'ok'); S.months = {}; return loadPrivate(); })
      .catch(err => { showAlert('#ins-msg', errText(err)); btn.disabled = false; })
