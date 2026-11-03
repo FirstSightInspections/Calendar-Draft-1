@@ -71,6 +71,14 @@ It starts with just you. While there's only one inspector, clients skip the "cho
 
 Anything on an inspector's private calendar blocks booking: jobs, vacation days, dentist appointments. To block time, add an event (or an all-day event) to that inspector's calendar.
 
+## Website pages and wording
+
+The page is a small website with **Home, Services, About, Schedule and Book** sections, plus an "Inspector login" link in the footer.
+
+- **Service descriptions:** edit `SERVICE_INFO` near the top of the script in `apps-script/Index.html`. The list of services itself comes from `TASKS` in `Config.gs`, so a new task gets its own card automatically.
+- **About section and home banner text:** these are plain text in `apps-script/Index.html` (search for "Hi, I'm Ross" and "Damage documented").
+- **Direct links to a section:** add `#services`, `#about`, `#schedule`, `#book` or `#inspector` to the web app URL.
+
 ## Embedding on your website
 
 Paste this where you want the booking page:
