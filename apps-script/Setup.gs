@@ -4,7 +4,8 @@
  *
  * It is safe to run again any time — e.g. after adding an inspector row.
  * It will:
- *   1. Use the spreadsheet this script is attached to (or create one).
+ *   1. Create a BRAND-NEW spreadsheet the first time (never touches your
+ *      existing sheets — even if this script was opened from one).
  *   2. Create the "Bookings" and "Inspectors" tabs if missing.
  *   3. For each inspector row: fill in an ID, color and access key if
  *      blank, and create a private Google Calendar if no Calendar ID.
@@ -19,8 +20,7 @@ function setup() {
   var ss;
   var ssId = props.getProperty(PROP_SPREADSHEET_ID);
   if (ssId) ss = SpreadsheetApp.openById(ssId);
-  if (!ss) ss = SpreadsheetApp.getActiveSpreadsheet();
-  if (!ss) ss = SpreadsheetApp.create(CONFIG.COMPANY_NAME + ' — Bookings');
+  if (!ss) ss = SpreadsheetApp.create(NEW_SPREADSHEET_NAME);
   props.setProperty(PROP_SPREADSHEET_ID, ss.getId());
 
   // 2. Tabs

@@ -66,7 +66,7 @@
   .day:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
   .day:disabled { color: #b8b8b8; border-color: #efece6; background: #fdfcfa; cursor: default; }
   .day.today .num { text-decoration: underline; text-underline-offset: 3px; }
-  .day[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .day[aria-pressed="true"], .day[aria-pressed="true"]:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: #fff; }
   .day[aria-pressed="true"] .hint { color: #fff; }
   .day .dots { display: flex; gap: 3px; height: 7px; }
   .day .dot { width: 7px; height: 7px; border-radius: 50%; }
@@ -76,7 +76,7 @@
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
 
   /* Time + inspector choices */
-  .choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+  .choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
   .choice { text-align: left; border: 1px solid var(--line-strong); border-radius: 10px; padding: 12px 14px; background: var(--bg); }
   .choice:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
   .choice:disabled { color: #b0b0b0; border-color: #efece6; cursor: default; }
@@ -902,7 +902,7 @@
   const DemoBackend = (() => {
     const cfg = {
       company: 'First Sight Inspections',
-      slots: ['09:00', '11:00', '13:00', '15:00'],
+      slots: Array.from({ length: 19 }, (_, i) => `${pad(8 + Math.floor(i / 2))}:${i % 2 ? '30' : '00'}`),
       slotMinutes: 120,
       workDays: [1, 2, 3, 4, 5, 6],
       minNoticeHours: 18,
@@ -945,7 +945,13 @@
         const r = rnd();
         const n = r < 0.35 ? 0 : r < 0.75 ? 1 : r < 0.93 ? 2 : 3;
         const region = pick(regions);
-        const slots = cfg.slots.slice().sort(() => rnd() - 0.5).slice(0, n).sort();
+        // Non-overlapping start times for this inspector's day.
+        const slots = [];
+        let idx = Math.floor(rnd() * 4);
+        while (slots.length < n && idx < cfg.slots.length) {
+          slots.push(cfg.slots[idx]);
+          idx += cfg.slotMinutes / 30 + Math.floor(rnd() * 3);
+        }
         slots.forEach(slot => {
           const name = `${pick(first)} ${pick(last)}`;
           const city = pick(region);
@@ -971,7 +977,14 @@
     const bookable = (s, slot) =>
       cfg.slots.includes(slot) && cfg.workDays.includes(dow(s)) && s <= addDays(today, cfg.horizonDays) &&
       at(s, slot) >= Date.now() + cfg.minNoticeHours * 3600000;
-    const isFree = (id, s, slot) => !live().some(b => b.inspectorId === id && b.date === s && b.time === slot);
+    const isFree = (id, s, slot) => {
+      const start = at(s, slot), end = start + cfg.slotMinutes * 60000;
+      return !live().some(b => {
+        if (b.inspectorId !== id || b.date !== s) return false;
+        const bs = at(b.date, b.time);
+        return bs < end && bs + cfg.slotMinutes * 60000 > start;
+      });
+    };
     const endT = hhmm => { const [h, m] = hhmm.split(':').map(Number); const t = h * 60 + m + cfg.slotMinutes; return `${pad(Math.floor(t / 60))}:${pad(t % 60)}`; };
     const addr = b => `${b.street}, ${b.city}, ${b.state} ${b.zip}`;
     const auth = key => inspectors.find(i => i.key === String(key || '').trim());

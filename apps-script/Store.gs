@@ -69,8 +69,6 @@ function props_() {
 function spreadsheet_() {
   var id = props_().getProperty(PROP_SPREADSHEET_ID);
   if (id) return SpreadsheetApp.openById(id);
-  var active = SpreadsheetApp.getActiveSpreadsheet();
-  if (active) return active;
   throw new Error('Booking system is not set up yet. Run setup() from the Apps Script editor.');
 }
 

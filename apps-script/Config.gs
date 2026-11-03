@@ -13,8 +13,15 @@ var CONFIG = {
   // with "timeZone" in appsscript.json).
   TIMEZONE: 'America/New_York',
 
-  // Bookable start times (24h "HH:mm") and how long each job blocks.
-  SLOTS: ['09:00', '11:00', '13:00', '15:00'],
+  // Bookable start times: every 30 minutes from 8:00 AM through 5:00 PM.
+  // (Built below from FIRST_START / LAST_START / START_EVERY_MINUTES.)
+  FIRST_START: '08:00',
+  LAST_START: '17:00',
+  START_EVERY_MINUTES: 30,
+  SLOTS: [],
+
+  // How long each job blocks the inspector's calendar. An inspector booked
+  // at 9:00 can't be booked again until 9:00 + this many minutes.
   SLOT_MINUTES: 120,
 
   // Days clients can book. 0 = Sunday … 6 = Saturday.
@@ -52,6 +59,19 @@ var CONFIG = {
 
   PUBLIC_CALENDAR_NAME: 'First Sight Inspections — Public Schedule'
 };
+
+// Build CONFIG.SLOTS from the settings above.
+(function () {
+  var toMin = function (t) { var p = t.split(':'); return +p[0] * 60 + +p[1]; };
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  for (var m = toMin(CONFIG.FIRST_START); m <= toMin(CONFIG.LAST_START); m += CONFIG.START_EVERY_MINUTES) {
+    CONFIG.SLOTS.push(pad(Math.floor(m / 60)) + ':' + pad(m % 60));
+  }
+})();
+
+// Name of the NEW spreadsheet setup() creates. Your existing sheets,
+// forms and calendars are never opened or modified.
+var NEW_SPREADSHEET_NAME = CONFIG.COMPANY_NAME + ' — Bookings (new system)';
 
 var SHEET_NAMES = {
   BOOKINGS: 'Bookings',

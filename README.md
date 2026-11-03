@@ -41,16 +41,18 @@ Your spec sheet (§5) originally said each inspector should only see **their own
 
 ## Setup (about 15 minutes, one time)
 
-1. **Create the spreadsheet.** In Google Drive, create a new Google Sheet, for example "First Sight Bookings".
-2. **Open Apps Script.** In the sheet, choose **Extensions → Apps Script**.
+> **Your current system is left alone.** This runs as a completely separate project. It creates its *own new* spreadsheet and *new* calendars, and it never opens or changes your existing Google Form, script, sheet or calendar. Keep using your current setup while you test this one, and switch over only when you're happy with it.
+
+1. **Create a separate script project.** Go to [script.google.com](https://script.google.com) and click **New project**. Name it "First Sight Booking System". *Don't* open it from **Extensions → Apps Script** inside your current sheet.
+2. **(Nothing to create by hand.)** `setup()` makes a brand-new spreadsheet called **"First Sight Inspections — Bookings (new system)"** in your Drive.
 3. **Add the files.** Copy each file from the `apps-script/` folder into the editor:
    - `Code.gs`, `Store.gs`, `Setup.gs`, `Config.gs`: click **+ → Script**, name the file without `.gs`, and paste.
    - `Index.html`: click **+ → HTML**, name it `Index`, and paste.
    - `appsscript.json`: under **Project Settings**, tick "Show appsscript.json manifest file", then paste.
-   - (Or use [clasp](https://github.com/google/clasp): `clasp create --type sheets --rootDir apps-script` and then `clasp push`.)
-4. **Check `Config.gs`.** Time slots, working days, minimum notice, form drop-down choices, and who gets notification emails are all set there.
+   - (Or use [clasp](https://github.com/google/clasp): `clasp create --type standalone --rootDir apps-script` and then `clasp push`.)
+4. **Check `Config.gs`.** Clients can pick start times **every 30 minutes from 8:00 AM to 5:00 PM** (`FIRST_START`, `LAST_START`, `START_EVERY_MINUTES`). Each job blocks the inspector for `SLOT_MINUTES` (default 2 hours), so a 9:00 job makes that inspector unavailable until 11:00. Working days, minimum notice, form drop-down choices, and who gets notification emails are also set there.
 5. **Run setup.** Select `setup` in the function drop-down and click **Run**, then approve the permissions. Setup will:
-   - create the `Bookings` and `Inspectors` tabs (with "Inspector A" and "Inspector B");
+   - create a **new** spreadsheet with `Bookings` and `Inspectors` tabs (with "Inspector A" and "Inspector B"). Its link is printed in the execution log;
    - create a private calendar for each inspector and the public calendar;
    - generate an **access key** for each inspector (shown in the `Inspectors` tab and in the execution log).
 6. **Edit the `Inspectors` tab.**
