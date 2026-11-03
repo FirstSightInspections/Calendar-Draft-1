@@ -38,7 +38,7 @@ function setup() {
   ensureHeaders_(inspectorsSheet, INSPECTOR_COLUMNS);
   if (inspectorsSheet.getLastRow() < 2) {
     inspectorsSheet.getRange(2, 1, 1, INSPECTOR_COLUMNS.length).setValues([
-      ['', 'Inspector A', '', '', '', '', true]
+      ['', 'Ross', '', '', '', '', true]
     ]);
   }
 

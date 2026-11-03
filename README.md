@@ -5,13 +5,13 @@ Online booking for First Sight Inspections. It shows two levels of detail:
 | | Who sees it | What it shows |
 |---|---|---|
 | **Book an inspection** | Anyone (clients) | Pick a date → pick a time → see which inspector is free *and where they're already working that day* → fill out the intake form |
-| **Public schedule** | Anyone (clients) | **Only** city, date, time and inspector name, e.g. "Inspector A · Frederick · 9:00 AM". No client, company, address or job details. |
+| **Public schedule** | Anyone (clients) | **Only** city, date, time and inspector name, e.g. "Ross · Frederick, MD · 9:00 AM". No client, company, address or job details. |
 | **Inspector view** | Inspectors (personal access key) | Every inspector's full schedule: insured/client, task, loss type, attending name/role/phone, full address, who filled out the form, contact email and notes. Inspectors can **hand a job off to another inspector** or cancel it. |
 
 It runs on the Google tools you already use, with no third-party scheduling platform and no hosting bill:
 
 - **Google Sheets**: a `Bookings` tab (one row per booking) and an `Inspectors` tab (one row per inspector).
-- **Google Calendar**: one private calendar per inspector with full details, plus one shared **public** calendar that holds only `Inspector A — Frederick`.
+- **Google Calendar**: one private calendar per inspector with full details, plus one shared **public** calendar that holds only `Ross — Frederick`.
 - **Gmail**: a full-detail email to you (and the assigned inspector) on every booking, plus an optional confirmation to the client.
 - **Apps Script**: serves the booking page and enforces privacy on the server.
 
@@ -52,7 +52,7 @@ Your spec sheet (§5) originally said each inspector should only see **their own
    - (Or use [clasp](https://github.com/google/clasp): `clasp create --type standalone --rootDir apps-script` and then `clasp push`.)
 4. **Check `Config.gs`.** Clients can pick start times **every 30 minutes from 8:00 AM to 5:00 PM** (`FIRST_START`, `LAST_START`, `START_EVERY_MINUTES`). Each job blocks the inspector for `SLOT_MINUTES` (default 2 hours), so a 9:00 job makes that inspector unavailable until 11:00. Working days, minimum notice, form drop-down choices, and who gets notification emails are also set there.
 5. **Run setup.** Select `setup` in the function drop-down and click **Run**, then approve the permissions. Setup will:
-   - create a **new** spreadsheet with `Bookings` and `Inspectors` tabs (with one inspector row, "Inspector A", for you). Its link is printed in the execution log;
+   - create a **new** spreadsheet with `Bookings` and `Inspectors` tabs (with one inspector row for you, "Ross"). Its link is printed in the execution log;
    - create a private calendar for each inspector and the public calendar;
    - generate an **access key** for each inspector (shown in the `Inspectors` tab and in the execution log).
 6. **Edit the `Inspectors` tab.**
