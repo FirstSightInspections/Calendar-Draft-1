@@ -140,6 +140,11 @@
   .contact b { font-family: var(--display); font-size: 20px; text-transform: uppercase; letter-spacing: .03em; }
   .contact a { font-weight: 600; font-size: 18px; text-decoration: none; }
   .contact a:hover { text-decoration: underline; }
+  #home-svc { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .incl { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px 28px; }
+  .inc { border-top: 3px solid var(--accent); padding-top: 12px; }
+  .inc h3 { font-size: 24px; text-transform: uppercase; margin-bottom: 8px; }
+  .inc ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 15px; }
   .tags { display: flex; gap: 8px; flex-wrap: wrap; }
   .tag { border: 1px solid var(--line-strong); border-radius: 999px; padding: 5px 14px; font-weight: 600; font-size: 14.5px; background: var(--bg); }
   .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; }
@@ -389,10 +394,6 @@
 
     <div class="band">
       <div class="container">
-        <div class="section-head">
-          <div><p class="eyebrow">Who I work with</p><h2>Both sides of the claim</h2></div>
-          <p>Independent, accurate documentation no matter who sends the assignment.</p>
-        </div>
         <div class="sides">
           <div class="side">
             <h3>Contractors &amp; public adjusters</h3>
@@ -443,19 +444,65 @@
       <div class="container">
         <p class="eyebrow">Services</p>
         <h1>Field inspections &amp; documentation</h1>
-        <p>Insurance field inspections, ladder assists, roof assessments and detailed property documentation. I inspect, document, measure, photograph and report. I don't approve claims, promise coverage or set settlement amounts.</p>
+        <p>Whatever the assignment, I inspect the whole property and document everything: roof, exterior and interior, with photos, measurements and a report. I don't approve claims, promise coverage or set settlement amounts.</p>
       </div>
     </div>
     <div class="band">
       <div class="container">
-        <div class="svc-grid" id="svc-grid"></div>
+        <div class="section-head">
+          <div><p class="eyebrow">Every inspection includes</p><h2>One visit, the whole property</h2></div>
+          <p>These aren't separate add-ons. On every inspection I check and document all of it, so nothing gets missed and nobody has to send me back.</p>
+        </div>
+        <div class="incl">
+          <div class="inc"><h3>Roof</h3><ul>
+            <li>Covering type, pitch and shingle exposure</li>
+            <li>Layers, drip edge, underlayment and ice-and-water, where observable</li>
+            <li>Valleys, flashing, pipe boots, ridge caps and vents</li>
+            <li>Shingle gauge measurements</li>
+            <li>Every slope photographed: front, right, rear, left</li></ul></div>
+          <div class="inc"><h3>Exterior</h3><ul>
+            <li>All four elevations</li>
+            <li>Siding, trim, fascia and soffit</li>
+            <li>Gutters, downspouts, window wraps and screens</li>
+            <li>Soft metals, vents and collateral damage</li>
+            <li>Siding measurements</li></ul></div>
+          <div class="inc"><h3>Interior</h3><ul>
+            <li>Room and damage-area overviews</li>
+            <li>Close-up photos of the damage</li>
+            <li>Wall, ceiling and room measurements</li>
+            <li>Door and window openings</li>
+            <li>Room sketches and damage locations</li></ul></div>
+          <div class="inc"><h3>Storm damage</h3><ul>
+            <li>Hail and wind</li>
+            <li>Fallen trees and debris</li>
+            <li>Water intrusion</li>
+            <li>Affected and unaffected areas, for comparison</li></ul></div>
+          <div class="inc"><h3>Roof access</h3><ul>
+            <li>Ladder setup and repositioning</li>
+            <li>Two- and three-story rooflines, where conditions permit</li>
+            <li>Steep roofs with proper safety equipment</li>
+            <li>Ladder assist for adjusters and engineers on site</li></ul></div>
+          <div class="inc"><h3>What you get</h3><ul>
+            <li>Detailed photo documentation</li>
+            <li>Measurements and sketches</li>
+            <li>An organized inspection report</li>
+            <li>Clear notes on what was observed</li></ul></div>
+        </div>
       </div>
     </div>
     <div class="band soft">
+      <div class="container">
+        <div class="section-head">
+          <div><p class="eyebrow">Services</p><h2>Book the visit you need</h2></div>
+        </div>
+        <div class="svc-grid" id="svc-grid"></div>
+      </div>
+    </div>
+    <div class="band">
       <div class="container split">
         <div><h3>Loss types</h3><div class="tags" id="loss-tags"></div></div>
         <div><h3>Service area</h3>
-          <p style="margin:0 0 12px">Based in Joppa, Maryland. Mobile, so there's no office to visit: I travel to the property.</p>
+          <p style="margin:0 0 12px">Based in Joppa, Maryland, in Harford County.</p>
           <ul class="area-list">
             <li>Harford County, MD</li><li>Baltimore County &amp; Baltimore City</li><li>Cecil County, MD</li>
             <li>The rest of Maryland</li><li>Southern &amp; Central Pennsylvania</li><li>Delaware</li><li>New Jersey</li><li>Virginia</li>
@@ -474,7 +521,6 @@
           <p class="eyebrow">About</p>
           <h2>Hi, I'm Ross.</h2>
           <p>First Sight Inspections, LLC is an independent property inspection and field services company based in Joppa, Maryland, in Harford County.</p>
-          <p>I work both sides of the claim: contractors and public adjusters, and insurance carriers, adjusting firms and inspection vendors. Whoever sends the assignment gets the same independent, thorough documentation.</p>
           <p>I'm not a roofing contractor or an adjusting company. My job is to inspect, document, measure, photograph and report property conditions accurately, thoroughly and on time, so the people I work with can make informed decisions.</p>
           <p>It's a mobile business: I travel to every property, often several in a day across different counties and states. That's why this booking page shows where I'm already working, so you can pick a day that fits the route.</p>
           <div class="creds">
@@ -818,6 +864,10 @@
     if (name === 'inspector' && S.ins.key) loadPrivate();
   }
   const setTab = setView;
+  window.addEventListener('hashchange', () => {
+    const name = location.hash.slice(1);
+    if (VIEWS[name] && $(VIEWS[name]).hidden) setView(name);
+  });
   document.addEventListener('click', e => {
     const g = e.target.closest('[data-go]');
     if (g) { e.preventDefault(); setView(g.dataset.go); }
@@ -828,38 +878,23 @@
    * ================================================================ */
   // `task` = which booking-form task to preselect when someone books from this card.
   const SERVICES = [
-    { name: 'Insurance Field Inspections', task: 'Solo Inspection', cta: 'Book an inspection',
-      desc: 'On-site inspections that give adjusters and insurance professionals clear, accurate documentation of the property.',
-      points: ['Exterior, roof and interior inspections', 'Hail, wind and collateral damage', 'Measurements and detailed photos', 'Inspection reports'] },
-    { name: 'Ladder Assist', task: '', cta: 'Request a ladder assist',
-      desc: 'Roof access and ladder support for adjusters, inspectors, engineers and other authorized professionals.',
-      points: ['Ladder setup and repositioning', 'Two- and three-story rooflines, where conditions permit', 'Steep roofs with proper safety equipment', 'Roof photos, measurements and damage documentation'] },
-    { name: 'Roof Inspections', task: 'Solo Inspection', cta: 'Book a roof inspection',
-      desc: 'Detailed documentation of the roof system and its visible condition.',
-      points: ['Covering type, pitch and shingle exposure', 'Layers, drip edge and underlayment, where observable', 'Valleys, flashing, pipe boots and ridge vents', 'Shingle gauge measurements and damage close-ups'] },
-    { name: 'Storm Damage Inspections', task: 'Solo Inspection', cta: 'Book a storm inspection',
-      desc: 'Hail, wind, fallen trees and water intrusion, documented in both affected and unaffected areas.',
-      points: ['Roof, siding, gutters and downspouts', 'Soft metals and other exterior components', 'Interior damage from storm events'] },
-    { name: 'Interior Inspections', task: 'Solo Inspection', cta: 'Book an interior inspection',
-      desc: 'Room-by-room documentation of interior damage.',
-      points: ['Overview, intermediate and close-up photos', 'Room, wall and ceiling measurements', 'Door and window openings', 'Room sketches and damage location diagrams'] },
-    { name: 'Exterior Elevations', task: 'Solo Inspection', cta: 'Book an exterior inspection',
-      desc: 'All four elevations documented with photos, measurements and observations.',
-      points: ['Front, right, rear and left elevations', 'Siding, trim, fascia and soffit', 'Gutters, downspouts, window wraps and screens', 'Vents and other exterior components'] },
-    { name: 'Adjuster & Engineer Meetings', task: 'Adjuster Meet', cta: 'Book a meeting',
-      desc: 'I attend scheduled inspections with adjusters, engineers, inspection vendors and other authorized professionals.',
-      points: ['Roof access and field assistance', 'Photos and measurements during the visit'] },
-    { name: 'ITEL Material Sampling', task: 'ITEL', cta: 'Book ITEL sampling',
-      desc: 'Field collection and documentation of material samples for identification testing, including mobile ITEL workflows when requested.',
-      points: [] },
-    { name: 'Reinspections & Repair Attempts', task: 'Reinspection', cta: 'Book a reinspection',
-      desc: 'Return visits for a second look, and documented repair attempts when an assignment calls for one.',
-      points: [] },
-    { name: 'Emergency Tarping', task: 'Tarp', request: true, cta: 'Request tarping',
-      desc: 'Emergency roof tarping and temporary weather protection when the job is safe and appropriate.',
-      points: [], note: 'By request: I\'ll confirm whether I can take it on.' }
+    { name: 'Solo Inspection', task: 'Solo Inspection', cta: 'Book a solo inspection',
+      desc: 'A complete inspection on my own, with no one else needed on site. Roof, exterior and interior, fully documented with photos, measurements and a report.', points: [] },
+    { name: 'Adjuster Meet', task: 'Adjuster Meet', cta: 'Book an adjuster meet',
+      desc: 'I meet the adjuster at the property, provide ladder assist and roof access, and walk the damage together so everything gets seen and documented.', points: [] },
+    { name: 'Reinspection', task: 'Reinspection', cta: 'Book a reinspection',
+      desc: 'A return visit when the carrier wants a second look, or when new or missed damage needs to be documented.', points: [] },
+    { name: 'Engineer Meet', task: 'Engineer Meet', cta: 'Book an engineer meet',
+      desc: 'I attend the engineer\'s inspection, provide roof access, point out the damage and document what was reviewed.', points: [] },
+    { name: 'ITEL', task: 'ITEL', cta: 'Book ITEL sampling',
+      desc: 'Material samples collected and documented for ITEL testing, including mobile ITEL when requested.', points: [] },
+    { name: 'Attempt to Repair', task: 'Attempt to Repair', cta: 'Book an attempt to repair',
+      desc: 'A documented repair attempt when the assignment calls for one.', points: [] },
+    { name: 'Tarp', task: 'Tarp', cta: 'Request a tarp', request: true,
+      desc: 'Emergency roof tarping and temporary weather protection when the job is safe and appropriate.', points: [],
+      note: 'By request: I\'ll confirm whether I can take it on.' }
   ];
-  const HOME_SERVICES = ['Insurance Field Inspections', 'Ladder Assist', 'Roof Inspections', 'Storm Damage Inspections'];
+  const HOME_SERVICES = ['Solo Inspection', 'Adjuster Meet', 'Reinspection'];
 
   function svcCard(svc) {
     const task = S.boot.tasks.includes(svc.task) ? svc.task : '';
