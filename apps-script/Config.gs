@@ -100,7 +100,6 @@ var BOOKING_COLUMNS = [
   { key: 'street',         label: 'Street Address' },
   { key: 'city',           label: 'City' },
   { key: 'state',          label: 'State' },
-  { key: 'zip',            label: 'ZIP' },
   { key: 'filledBy',       label: 'Form Filled Out By' },
   { key: 'contactEmail',   label: 'Contact Email' },
   { key: 'notes',          label: 'Notes' },

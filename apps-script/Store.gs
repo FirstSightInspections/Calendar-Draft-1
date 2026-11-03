@@ -241,7 +241,7 @@ function publicEntries_(start, end) {
 }
 
 function fullAddress_(b) {
-  return [b.street, b.city, [b.state, b.zip].filter(String).join(' ')].filter(String).join(', ');
+  return [b.street, b.city, b.state].filter(String).join(', ');
 }
 
 function privateDescription_(b) {

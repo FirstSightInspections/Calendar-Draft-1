@@ -30,7 +30,7 @@ function setup() {
   ['Submitted', 'Start', 'End'].forEach(function (label) {
     if (idx[label] !== undefined) bookings.getRange(2, idx[label] + 1, bookings.getMaxRows() - 1, 1).setNumberFormat('yyyy-mm-dd h:mm am/pm');
   });
-  ['Attending Phone', 'ZIP'].forEach(function (label) {
+  ['Attending Phone'].forEach(function (label) {
     if (idx[label] !== undefined) bookings.getRange(2, idx[label] + 1, bookings.getMaxRows() - 1, 1).setNumberFormat('@');
   });
 

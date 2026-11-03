@@ -278,7 +278,7 @@ function toClientBooking_(b, me) {
     return base;
   }
   ['clientName', 'task', 'lossType', 'attendingName', 'attendingRole', 'attendingPhone',
-   'street', 'state', 'zip', 'filledBy', 'contactEmail', 'notes', 'lastChange'].forEach(function (k) {
+   'street', 'state', 'filledBy', 'contactEmail', 'notes', 'lastChange'].forEach(function (k) {
     base[k] = b[k] == null ? '' : String(b[k]);
   });
   base.address = fullAddress_(b);
@@ -325,7 +325,6 @@ function validateBooking_(p) {
     street: required(p.street, 'Street address', 160),
     city: titleCase(required(p.city, 'City', 60)),
     state: required(p.state, 'State', 20).toUpperCase(),
-    zip: required(p.zip, 'ZIP', 10),
     filledBy: required(p.filledBy, '"Form filled out by"'),
     contactEmail: required(p.contactEmail, 'Contact email', 160).toLowerCase(),
     notes: String(p.notes == null ? '' : p.notes).trim().slice(0, 2000)
@@ -333,6 +332,5 @@ function validateBooking_(p) {
   if (!isYmd_(b.date) || CONFIG.SLOTS.indexOf(b.time) === -1) throw new Error('Please pick a date and time.');
   if ((b.attendingPhone.match(/\d/g) || []).length < 10) throw new Error('Please enter a 10-digit phone number.');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.contactEmail)) throw new Error('Please enter a valid contact email.');
-  if (!/^\d{5}(-\d{4})?$/.test(b.zip)) throw new Error('Please enter a valid ZIP code.');
   return b;
 }

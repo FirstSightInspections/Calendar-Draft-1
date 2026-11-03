@@ -250,7 +250,7 @@
       </div>
       <form id="booking-form" novalidate>
         <fieldset>
-          <legend>Claim</legend>
+          <legend>Job details</legend>
           <div class="grid2">
             <div class="field full"><label>Insured / client name <span class="req">*</span><input name="clientName" required autocomplete="off"></label></div>
             <div class="field"><label>Task <span class="req">*</span><select name="task" required></select></label></div>
@@ -261,9 +261,8 @@
           <legend>Property address</legend>
           <div class="grid2">
             <div class="field full"><label>Street address <span class="req">*</span><input name="street" required autocomplete="address-line1"></label></div>
-            <div class="field full"><label>City <span class="req">*</span><input name="city" required autocomplete="address-level2"></label></div>
+            <div class="field"><label>City <span class="req">*</span><input name="city" required autocomplete="address-level2"></label></div>
             <div class="field"><label>State <span class="req">*</span><input name="state" required maxlength="20" autocomplete="address-level1"></label></div>
-            <div class="field"><label>ZIP <span class="req">*</span><input name="zip" required inputmode="numeric" maxlength="10" autocomplete="postal-code"></label></div>
           </div>
         </fieldset>
         <fieldset>
@@ -629,7 +628,6 @@
     }
     if ((data.attendingPhone.match(/\d/g) || []).length < 10) { form.attendingPhone.focus(); return showAlert('#form-error', 'Please enter a 10-digit phone number.'); }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contactEmail.trim())) { form.contactEmail.focus(); return showAlert('#form-error', 'Please enter a valid contact email.'); }
-    if (!/^\d{5}(-\d{4})?$/.test(data.zip.trim())) { form.zip.focus(); return showAlert('#form-error', 'Please enter a valid ZIP code.'); }
 
     Object.assign(data, { date: S.date, time: S.time, inspectorId: S.inspectorId });
     const btn = $('#submit-btn');
@@ -1001,7 +999,7 @@
             clientName: name, task: rnd() < 0.8 ? 'Inspection' : 'Reinspection', lossType: pick(['Hail & Wind', 'Hail & Wind', 'Wind', 'Water', 'Fire']),
             attendingName: `${pick(first)} ${pick(last)}`, attendingRole: co.includes('Adjusters') || co.includes('Claims') ? 'Public Adjuster' : 'Contractor',
             attendingPhone: `(410) 555-${String(1000 + Math.floor(rnd() * 8999))}`,
-            street: `${100 + Math.floor(rnd() * 9800)} ${pick(streets)}`, state: 'MD', zip: String(21000 + Math.floor(rnd() * 900)),
+            street: `${100 + Math.floor(rnd() * 9800)} ${pick(streets)}`, state: 'MD',
             filledBy: `${pick(first)} at ${co}`, contactEmail: `scheduling@${co.toLowerCase().replace(/[^a-z]/g, '')}.example`,
             notes: rnd() < 0.4 ? pick(['Gate code 4410. Dog in backyard.', 'Interior water damage in 2nd floor bath.', 'Homeowner works nights — call before 10am.', 'Ladder assist needed, steep roof.']) : '',
             submitted: '', lastChange: ''
@@ -1026,7 +1024,7 @@
       });
     };
     const endT = hhmm => { const [h, m] = hhmm.split(':').map(Number); const t = h * 60 + m + cfg.slotMinutes; return `${pad(Math.floor(t / 60))}:${pad(t % 60)}`; };
-    const addr = b => `${b.street}, ${b.city}, ${b.state} ${b.zip}`;
+    const addr = b => `${b.street}, ${b.city}, ${b.state}`;
     const auth = key => inspectors.find(i => i.key === String(key || '').trim());
     const full = (b, me) => Object.assign({}, b, {
       inspectorName: insp(b.inspectorId).name, endTime: endT(b.time), address: addr(b), mine: b.inspectorId === me.id
