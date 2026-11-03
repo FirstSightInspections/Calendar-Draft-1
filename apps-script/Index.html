@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>First Sight Inspections — Book an Inspection</title>
+<style>
+  :root {
+    --ink: #1f2328;
+    --muted: #6b7280;
+    --line: #e4dfd3;
+    --line-strong: #cfc7b6;
+    --soft: #faf8f3;
+    --bg: #ffffff;
+    --accent: #e46f1b;
+    --accent-dark: #c35a10;
+    --accent-soft: #fdf1e7;
+    --ok: #1f7a4d;
+    --ok-soft: #e9f6ef;
+    --err: #b42318;
+    --err-soft: #fdecea;
+    --radius: 12px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .lede { color: var(--muted); margin: 0 0 22px; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  [hidden] { display: none !important; }
+
+  .demo-banner { background: var(--accent-soft); border: 1px solid #f6cfae; color: #7a3a0a; padding: 8px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line); margin-bottom: 20px; overflow-x: auto; }
+  .tab { background: none; border: 0; padding: 10px 6px; margin-right: 18px; font-weight: 600; color: var(--muted); border-bottom: 3px solid transparent; white-space: nowrap; }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+  /* Cards */
+  .card { border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; margin-bottom: 16px; background: var(--bg); }
+  .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .step-label { font-size: 13px; color: var(--muted); margin: 0; }
+  .step-title { font-size: 17px; font-weight: 600; margin: 2px 0 0; }
+  .link { background: none; border: 0; color: var(--accent-dark); padding: 0; font-weight: 600; font-size: 14px; }
+  .link:hover { text-decoration: underline; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+
+  /* Month nav */
+  .month-nav { display: flex; align-items: center; gap: 6px; }
+  .month-nav .label { min-width: 132px; text-align: center; font-weight: 600; }
+  .icon-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); font-size: 16px; line-height: 1; }
+  .icon-btn:disabled { opacity: .35; cursor: default; }
+
+  select.compact { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; background: var(--bg); }
+
+  /* Calendar grid */
+  .dow, .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .dow div { text-align: center; font-size: 12px; color: var(--muted); padding-bottom: 2px; }
+  .grid { margin-top: 6px; }
+  .day { position: relative; aspect-ratio: 1 / 1; min-height: 44px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--bg);
+         display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px; font-size: 15px; }
+  .day:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
+  .day:disabled { color: #b8b8b8; border-color: #efece6; background: #fdfcfa; cursor: default; }
+  .day.today .num { text-decoration: underline; text-underline-offset: 3px; }
+  .day[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .day[aria-pressed="true"] .hint { color: #fff; }
+  .day .dots { display: flex; gap: 3px; height: 7px; }
+  .day .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .day .hint { font-size: 10.5px; line-height: 1.1; color: var(--muted); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .blank { aspect-ratio: 1 / 1; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; font-size: 12.5px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+  /* Time + inspector choices */
+  .choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+  .choice { text-align: left; border: 1px solid var(--line-strong); border-radius: 10px; padding: 12px 14px; background: var(--bg); }
+  .choice:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
+  .choice:disabled { color: #b0b0b0; border-color: #efece6; cursor: default; }
+  .choice[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-soft); }
+  .choice .big { font-weight: 600; display: block; }
+  .choice .sub { font-size: 13px; color: var(--muted); display: block; margin-top: 2px; }
+  .insp-choice { display: flex; gap: 12px; align-items: flex-start; }
+  .swatch { flex: none; width: 12px; height: 12px; border-radius: 50%; margin-top: 5px; }
+  .nearby { background: var(--soft); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; font-size: 14px; }
+  .nearby ul { margin: 4px 0 0; padding-left: 18px; }
+
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; background: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; }
+
+  /* Form */
+  form .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; }
+  fieldset { border: 0; padding: 0; margin: 0 0 18px; }
+  legend { font-weight: 600; margin-bottom: 8px; padding: 0; }
+  label { display: block; font-size: 13px; color: var(--muted); }
+  label .req { color: var(--accent-dark); }
+  .field input, .field select, .field textarea, .input {
+    display: block; width: 100%; margin-top: 4px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--bg); font-size: 16px; }
+  .field input:focus, .field select:focus, .field textarea:focus, .input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+  .full { grid-column: 1 / -1; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .btn { border: 0; border-radius: 10px; padding: 12px 20px; font-weight: 600; background: var(--accent); color: #fff; }
+  .btn:hover:not(:disabled) { background: var(--accent-dark); }
+  .btn:disabled { opacity: .6; cursor: default; }
+  .btn.secondary { background: var(--bg); color: var(--ink); border: 1px solid var(--line-strong); }
+  .btn.secondary:hover:not(:disabled) { background: var(--soft); }
+  .btn.danger { background: var(--bg); color: var(--err); border: 1px solid #f0c4bf; }
+  .btn.small { padding: 7px 12px; font-size: 14px; border-radius: 8px; }
+  .alert { border-radius: 8px; padding: 10px 12px; margin: 12px 0 0; font-size: 14px; }
+  .alert.err { background: var(--err-soft); color: var(--err); }
+  .alert.ok { background: var(--ok-soft); color: var(--ok); }
+  .privacy { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+
+  .done { text-align: center; padding: 32px 22px; }
+  .done .check { width: 52px; height: 52px; border-radius: 50%; background: var(--ok-soft); color: var(--ok); display: inline-flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 10px; }
+
+  /* Schedules */
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .agenda-day { padding: 12px 0; border-top: 1px solid var(--line); }
+  .agenda-day:first-child { border-top: 0; padding-top: 0; }
+  .agenda-date { font-weight: 600; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .entry { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14.5px; flex-wrap: wrap; }
+  .entry .time { min-width: 76px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; border-radius: 999px; padding: 2px 10px 2px 8px; background: var(--soft); border: 1px solid var(--line); }
+  .chip i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .empty { color: var(--muted); padding: 18px 0; text-align: center; }
+
+  /* Inspector jobs */
+  details.job { border: 1px solid var(--line); border-radius: 10px; margin: 8px 0; background: var(--bg); }
+  details.job[open] { border-color: var(--line-strong); }
+  details.job summary { list-style: none; cursor: pointer; padding: 10px 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  details.job summary::-webkit-details-marker { display: none; }
+  details.job summary::after { content: "▸"; margin-left: auto; color: var(--muted); transition: transform .15s; }
+  details.job[open] summary::after { transform: rotate(90deg); }
+  .job-body { padding: 4px 14px 14px; border-top: 1px solid var(--line); }
+  dl.kv { display: grid; grid-template-columns: 170px 1fr; gap: 6px 14px; margin: 12px 0; font-size: 14.5px; }
+  dl.kv dt { color: var(--muted); }
+  dl.kv dd { margin: 0; white-space: pre-wrap; word-break: break-word; }
+  .job-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding-top: 10px; border-top: 1px dashed var(--line); }
+  .mini-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 16px; }
+  .mini-day { border: 1px solid var(--line); border-radius: 6px; min-height: 52px; padding: 4px; font-size: 12px; background: var(--bg); text-align: left; display: flex; flex-direction: column; gap: 3px; }
+  .mini-day.off { background: #fbfaf7; color: #c0bcb2; }
+  .mini-day .bars { display: flex; flex-direction: column; gap: 2px; }
+  .mini-day .bar { height: 5px; border-radius: 3px; }
+  .mini-dow { text-align: center; font-size: 11px; color: var(--muted); }
+  .whoami { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 18px 16px 40px; }
+    h1 { font-size: 22px; }
+    .card { padding: 16px; }
+    .dow, .grid { gap: 5px; }
+    .day { font-size: 14px; border-radius: 7px; }
+    .day .hint { display: none; }
+    form .grid2 { grid-template-columns: 1fr; }
+    dl.kv { grid-template-columns: 1fr; gap: 0; }
+    dl.kv dd { margin-bottom: 8px; }
+    .mini-day { min-height: 40px; }
+    .choices { grid-template-columns: 1fr 1fr; }
+    .tab { margin-right: 4px; padding: 10px 4px; }
+    .tab .long { display: none; }
+    .tabs { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 id="company">First Sight Inspections</h1>
+  <p class="lede">Pick a date and time, and we'll show you which inspector is available — and where they're already working that day.</p>
+
+  <div id="demo-banner" class="demo-banner" hidden>
+    Demo mode — sample data only, nothing is saved. Inspector view access keys: <b>demo-key-a</b> or <b>demo-key-b</b>.
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="book" aria-selected="true">Book<span class="long"> an inspection</span></button>
+    <button class="tab" role="tab" data-tab="public" aria-selected="false"><span class="long">Public </span>Schedule</button>
+    <button class="tab" role="tab" data-tab="inspector" aria-selected="false">Inspector<span class="long"> view</span></button>
+  </nav>
+
+  <!-- ============================ BOOK ============================ -->
+  <section id="tab-book">
+    <div class="card" id="step-date">
+      <div class="card-head">
+        <div>
+          <p class="step-label">Step 1 — pick a date</p>
+        </div>
+        <div class="month-nav">
+          <button class="icon-btn" id="cal-prev" aria-label="Previous month">‹</button>
+          <span class="label" id="cal-label"></span>
+          <button class="icon-btn" id="cal-next" aria-label="Next month">›</button>
+        </div>
+      </div>
+      <div class="card-head" style="margin-bottom:10px">
+        <label class="small" style="display:flex;align-items:center;gap:8px">Inspector
+          <select class="compact" id="book-filter"><option value="">Any available</option></select>
+        </label>
+      </div>
+      <div class="dow"><div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div></div>
+      <div class="grid" id="cal-grid" aria-live="polite"></div>
+      <div class="legend" id="cal-legend"></div>
+      <div id="cal-error" class="alert err" hidden></div>
+    </div>
+
+    <div class="card" id="step-time" hidden>
+      <div class="card-head">
+        <div>
+          <p class="step-label">Step 2 — pick a time</p>
+          <p class="step-title" id="time-title"></p>
+        </div>
+      </div>
+      <div id="time-nearby"></div>
+      <div class="choices" id="time-choices"></div>
+    </div>
+
+    <div class="card" id="step-inspector" hidden>
+      <div class="card-head">
+        <div>
+          <p class="step-label">Step 3 — choose your inspector</p>
+          <p class="step-title" id="insp-title"></p>
+        </div>
+      </div>
+      <div class="choices" id="insp-choices" style="grid-template-columns:1fr"></div>
+    </div>
+
+    <div class="card" id="step-details" hidden>
+      <div class="card-head">
+        <div>
+          <p class="step-label">Step 4 — inspection details</p>
+          <p class="step-title" id="details-title"></p>
+        </div>
+        <button class="link" type="button" id="details-change">Change</button>
+      </div>
+      <form id="booking-form" novalidate>
+        <fieldset>
+          <legend>Claim</legend>
+          <div class="grid2">
+            <div class="field full"><label>Insured / client name <span class="req">*</span><input name="clientName" required autocomplete="off"></label></div>
+            <div class="field"><label>Task <span class="req">*</span><select name="task" required></select></label></div>
+            <div class="field"><label>Loss type <span class="req">*</span><select name="lossType" required></select></label></div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Property address</legend>
+          <div class="grid2">
+            <div class="field full"><label>Street address <span class="req">*</span><input name="street" required autocomplete="address-line1"></label></div>
+            <div class="field full"><label>City <span class="req">*</span><input name="city" required autocomplete="address-level2"></label></div>
+            <div class="field"><label>State <span class="req">*</span><input name="state" required maxlength="20" autocomplete="address-level1"></label></div>
+            <div class="field"><label>ZIP <span class="req">*</span><input name="zip" required inputmode="numeric" maxlength="10" autocomplete="postal-code"></label></div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Attending on site</legend>
+          <div class="grid2">
+            <div class="field"><label>Name <span class="req">*</span><input name="attendingName" required></label></div>
+            <div class="field"><label>Role <span class="req">*</span><select name="attendingRole" required></select></label></div>
+            <div class="field full"><label>Phone number <span class="req">*</span><input name="attendingPhone" type="tel" required inputmode="tel" autocomplete="tel"></label></div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Your contact info</legend>
+          <div class="grid2">
+            <div class="field"><label>Form filled out by <span class="req">*</span><input name="filledBy" required autocomplete="name"></label></div>
+            <div class="field"><label>Contact email <span class="req">*</span><input name="contactEmail" type="email" required autocomplete="email"></label></div>
+            <div class="field full"><label>Additional notes<textarea name="notes" rows="3" maxlength="2000"></textarea></label></div>
+          </div>
+        </fieldset>
+        <div class="hp" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <button class="btn" type="submit" id="submit-btn">Confirm booking</button>
+        <p class="privacy">Only the city, date, time and inspector appear on our public schedule. Your client's name, address and claim details stay private.</p>
+        <div id="form-error" class="alert err" hidden></div>
+      </form>
+    </div>
+
+    <div class="card done" id="step-done" hidden>
+      <div class="check">✓</div>
+      <h2 style="margin:0 0 6px;font-size:21px">You're booked!</h2>
+      <p id="done-summary" style="margin:0 0 6px"></p>
+      <p class="muted small" id="done-email"></p>
+      <button class="btn secondary" id="book-another" style="margin-top:10px">Book another inspection</button>
+    </div>
+  </section>
+
+  <!-- ======================== PUBLIC SCHEDULE ===================== -->
+  <section id="tab-public" hidden>
+    <div class="card">
+      <div class="toolbar">
+        <div class="month-nav">
+          <button class="icon-btn" id="pub-prev" aria-label="Previous month">‹</button>
+          <span class="label" id="pub-label"></span>
+          <button class="icon-btn" id="pub-next" aria-label="Next month">›</button>
+        </div>
+        <select class="compact" id="pub-filter"><option value="">All inspectors</option></select>
+      </div>
+      <p class="muted small" style="margin-top:0">Where our inspectors will be. Booking near an existing stop? Tap a day to book it.</p>
+      <div id="pub-list"></div>
+      <div id="pub-error" class="alert err" hidden></div>
+    </div>
+  </section>
+
+  <!-- ======================== INSPECTOR VIEW ====================== -->
+  <section id="tab-inspector" hidden>
+    <div class="card" id="insp-login">
+      <p class="step-title" style="margin-top:0">Inspector sign-in</p>
+      <p class="muted small">Full job details are only visible to First Sight inspectors. Enter your personal access key.</p>
+      <form id="login-form" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+        <div class="field" style="flex:1;min-width:220px"><label>Access key<input class="input" name="key" type="password" autocomplete="current-password" required></label></div>
+        <button class="btn" type="submit" id="login-btn">Sign in</button>
+      </form>
+      <div id="login-error" class="alert err" hidden></div>
+    </div>
+
+    <div id="insp-app" hidden>
+      <div class="card">
+        <div class="toolbar">
+          <div class="whoami"><span class="chip" id="whoami"></span><button class="link" id="logout">Sign out</button></div>
+          <div class="month-nav">
+            <button class="icon-btn" id="ins-prev" aria-label="Previous month">‹</button>
+            <span class="label" id="ins-label"></span>
+            <button class="icon-btn" id="ins-next" aria-label="Next month">›</button>
+          </div>
+        </div>
+        <div class="toolbar" style="margin-bottom:10px">
+          <select class="compact" id="ins-filter"></select>
+          <span class="muted small" id="ins-count"></span>
+        </div>
+        <div class="mini-dow mini-grid" style="margin-bottom:2px"><div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div></div>
+        <div class="mini-grid" id="ins-grid"></div>
+        <div class="legend" id="ins-legend" style="margin:-6px 0 14px"></div>
+        <div id="ins-msg" class="alert" hidden></div>
+        <div id="ins-list"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================
+   * Backend bridge: Apps Script when deployed, demo data otherwise.
+   * ================================================================ */
+  const IS_GAS = typeof google !== 'undefined' && google.script && google.script.run;
+
+  function api(name, ...args) {
+    if (!IS_GAS) return DemoBackend[name](...args);
+    return new Promise((resolve, reject) => {
+      google.script.run
+        .withSuccessHandler(resolve)
+        .withFailureHandler(err => reject(err instanceof Error ? err : new Error(String(err))))[name](...args);
+    });
+  }
+
+  function errText(err) {
+    return String((err && err.message) || err || 'Something went wrong.')
+      .replace(/^(Exception|Error|ScriptError):\s*/i, '')
+      .replace(/^SLOT_TAKEN:\s*/, '');
+  }
+
+  /* ================================================================
+   * Helpers
+   * ================================================================ */
+  const $ = sel => document.querySelector(sel);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const pad = n => String(n).padStart(2, '0');
+  const ymd = (y, m, d) => `${y}-${pad(m)}-${pad(d)}`;
+  const parseYmd = s => s.split('-').map(Number);
+  const utc = s => { const [y, m, d] = parseYmd(s); return new Date(Date.UTC(y, m - 1, d)); };
+  const dow = s => utc(s).getUTCDay();
+  const addDays = (s, n) => { const d = utc(s); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+  const daysIn = (y, m) => new Date(Date.UTC(y, m, 0)).getUTCDate();
+  const monthKey = c => ymd(c.y, c.m, 1);
+  const monthLabel = c => new Date(Date.UTC(c.y, c.m - 1, 1)).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const dateLabel = (s, opts) => utc(s).toLocaleDateString('en-US', Object.assign({ weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' }, opts || {}));
+  const longDate = s => dateLabel(s, { weekday: 'long', month: 'long' });
+  const t12 = hhmm => { let [h, m] = hhmm.split(':').map(Number); const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; return `${h}:${pad(m)} ${ap}`; };
+  const short12 = hhmm => t12(hhmm).replace(':00', '').replace(' ', '').toLowerCase();
+  const endOf = hhmm => { const [h, m] = hhmm.split(':').map(Number); const t = h * 60 + m + S.boot.slotMinutes; return `${pad(Math.floor(t / 60) % 24)}:${pad(t % 60)}`; };
+  const shiftMonth = (c, n) => { const d = new Date(Date.UTC(c.y, c.m - 1 + n, 1)); return { y: d.getUTCFullYear(), m: d.getUTCMonth() + 1 }; };
+  const show = (el, on) => { (typeof el === 'string' ? $(el) : el).hidden = !on; };
+  const store = {
+    get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) { /* ignore */ } }
+  };
+  function showAlert(el, msg, kind) {
+    el = typeof el === 'string' ? $(el) : el;
+    el.className = 'alert ' + (kind || 'err');
+    el.textContent = msg || '';
+    el.hidden = !msg;
+  }
+
+  /* ================================================================
+   * State
+   * ================================================================ */
+  const S = {
+    boot: null,
+    inspectors: {},
+    months: {},            // monthKey -> { days }
+    loading: {},           // monthKey -> Promise
+    cal: null,             // {y, m} booking calendar cursor
+    pub: null,             // {y, m} public schedule cursor
+    filter: '',            // booking inspector filter
+    date: null, time: null, inspectorId: null,
+    ins: { key: null, me: null, list: [], cursor: null, filter: 'all', seeAll: true }
+  };
+
+  const inspName = id => (S.inspectors[id] && S.inspectors[id].name) || 'Inspector';
+  const inspColor = id => (S.inspectors[id] && S.inspectors[id].color) || '#888';
+
+  function loadMonth(c, force) {
+    const key = monthKey(c);
+    if (!force && S.months[key]) return Promise.resolve(S.months[key]);
+    if (!force && S.loading[key]) return S.loading[key];
+    const p = api('getAvailability', key, ymd(c.y, c.m, daysIn(c.y, c.m)))
+      .then(res => { S.months[key] = res.days; delete S.loading[key]; return res.days; })
+      .catch(err => { delete S.loading[key]; throw err; });
+    S.loading[key] = p;
+    return p;
+  }
+  const dayData = s => { const [y, m] = parseYmd(s); const mo = S.months[ymd(y, m, 1)]; return mo && mo[s]; };
+  const freeFor = (day, slot) => {
+    const ids = (day && day.slots && day.slots[slot]) || [];
+    return S.filter ? ids.filter(id => id === S.filter) : ids;
+  };
+  const lastBookable = () => addDays(S.boot.today, S.boot.horizonDays);
+
+  /* ================================================================
+   * Tabs
+   * ================================================================ */
+  function setTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === name)));
+    ['book', 'public', 'inspector'].forEach(n => show('#tab-' + n, n === name));
+    if (name === 'public') renderPublic();
+    if (name === 'inspector' && S.ins.key) loadPrivate();
+  }
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => setTab(t.dataset.tab)));
+
+  /* ================================================================
+   * Step 1 — calendar
+   * ================================================================ */
+  function renderCalendar() {
+    const c = S.cal;
+    $('#cal-label').textContent = monthLabel(c);
+    const [ty, tm] = parseYmd(S.boot.today);
+    $('#cal-prev').disabled = c.y < ty || (c.y === ty && c.m <= tm);
+    $('#cal-next').disabled = monthKey(shiftMonth(c, 1)) > lastBookable();
+
+    const grid = $('#cal-grid');
+    const days = S.months[monthKey(c)];
+    if (!days) {
+      grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Loading availability…</div>';
+      return;
+    }
+    let html = '';
+    const first = ymd(c.y, c.m, 1);
+    for (let i = 0; i < dow(first); i++) html += '<div class="blank"></div>';
+    for (let d = 1; d <= daysIn(c.y, c.m); d++) {
+      const s = ymd(c.y, c.m, d);
+      const day = days[s];
+      const open = day ? Object.keys(day.slots).filter(slot => freeFor(day, slot).length).length : 0;
+      const sched = (day && day.schedule) || [];
+      const insps = [...new Set(sched.map(e => e.inspectorId))];
+      const cities = [...new Set(sched.map(e => e.city))];
+      const title = open
+        ? `${longDate(s)}: ${open} time${open > 1 ? 's' : ''} open` + (cities.length ? `. Inspectors in ${cities.join(', ')}` : '')
+        : `${longDate(s)}: unavailable`;
+      html += `<button class="day${s === S.boot.today ? ' today' : ''}" data-date="${s}" ${open ? '' : 'disabled'}
+                 aria-pressed="${s === S.date}" title="${esc(title)}" aria-label="${esc(title)}">
+                 <span class="num">${d}</span>
+                 <span class="dots">${insps.map(id => `<i class="dot" style="background:${esc(inspColor(id))}"></i>`).join('')}</span>
+                 ${cities.length ? `<span class="hint">${esc(cities[0])}${cities.length > 1 ? ' +' + (cities.length - 1) : ''}</span>` : ''}
+               </button>`;
+    }
+    grid.innerHTML = html;
+  }
+
+  function renderLegend(el) {
+    $(el).innerHTML = S.boot.inspectors.map(i =>
+      `<span><i class="dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${esc(i.color)}"></i>${esc(i.name)} already booked nearby</span>`
+    ).join('');
+  }
+
+  function gotoMonth(n) {
+    S.cal = shiftMonth(S.cal, n);
+    refreshCalendar();
+  }
+  function refreshCalendar(force) {
+    renderCalendar();
+    showAlert('#cal-error', '');
+    const c = S.cal;
+    loadMonth(c, force).then(() => { if (monthKey(c) === monthKey(S.cal)) renderCalendar(); })
+      .catch(err => showAlert('#cal-error', 'Could not load availability: ' + errText(err)));
+  }
+
+  $('#cal-prev').addEventListener('click', () => gotoMonth(-1));
+  $('#cal-next').addEventListener('click', () => gotoMonth(1));
+  $('#cal-grid').addEventListener('click', e => {
+    const b = e.target.closest('.day');
+    if (b && !b.disabled) selectDate(b.dataset.date);
+  });
+  $('#book-filter').addEventListener('change', e => {
+    S.filter = e.target.value;
+    renderCalendar();
+    if (S.date) {
+      const day = dayData(S.date);
+      const stillOpen = day && Object.keys(day.slots).some(slot => freeFor(day, slot).length);
+      if (stillOpen) selectDate(S.date, true); else resetFrom('date');
+    }
+  });
+
+  /* ================================================================
+   * Step 2 — time
+   * ================================================================ */
+  function resetFrom(step) {
+    if (step === 'date') { S.date = null; show('#step-time', false); renderCalendar(); }
+    if (step === 'date' || step === 'time') { S.time = null; show('#step-inspector', false); }
+    if (step !== 'details') { S.inspectorId = null; show('#step-details', false); }
+    show('#step-done', false);
+  }
+
+  function nearbyHtml(sched, onlyId) {
+    const rows = sched.filter(e => !onlyId || e.inspectorId === onlyId);
+    if (!rows.length) return '';
+    return `<div class="nearby"><b>Already in the area that day</b><ul>${rows.map(e =>
+      `<li><span class="chip"><i style="background:${esc(inspColor(e.inspectorId))}"></i>${esc(e.inspectorName)}</span>
+       ${esc(e.city)} · ${esc(t12(e.time))}</li>`).join('')}</ul></div>`;
+  }
+
+  function selectDate(s, keepScroll) {
+    resetFrom('date');
+    S.date = s;
+    renderCalendar();
+    const day = dayData(s);
+    $('#time-title').textContent = longDate(s);
+    $('#time-nearby').innerHTML = nearbyHtml(day.schedule || []);
+    $('#time-choices').innerHTML = S.boot.slots.map(slot => {
+      const offered = day.slots[slot] !== undefined;
+      const n = offered ? freeFor(day, slot).length : 0;
+      const sub = !offered ? 'Not available' : n ? (S.filter ? 'Available' : `${n} inspector${n > 1 ? 's' : ''} available`) : 'Booked';
+      return `<button class="choice" data-time="${slot}" ${n ? '' : 'disabled'} aria-pressed="false">
+                <span class="big">${t12(slot)} – ${t12(endOf(slot))}</span><span class="sub">${sub}</span></button>`;
+    }).join('');
+    show('#step-time', true);
+    if (!keepScroll) $('#step-time').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  $('#time-choices').addEventListener('click', e => {
+    const b = e.target.closest('.choice');
+    if (b && !b.disabled) selectTime(b.dataset.time);
+  });
+
+  /* ================================================================
+   * Step 3 — inspector
+   * ================================================================ */
+  function selectTime(slot) {
+    resetFrom('time');
+    S.time = slot;
+    document.querySelectorAll('#time-choices .choice').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.time === slot)));
+    const day = dayData(S.date);
+    const free = freeFor(day, slot);
+    $('#insp-title').textContent = `${dateLabel(S.date)} · ${t12(slot)}`;
+    $('#insp-choices').innerHTML = free.map(id => {
+      const mine = (day.schedule || []).filter(e => e.inspectorId === id);
+      const where = mine.length
+        ? 'Already in ' + mine.map(e => `${esc(e.city)} at ${esc(t12(e.time))}`).join(', ') + ' that day'
+        : 'Open day — no other jobs yet';
+      return `<button class="choice insp-choice" data-insp="${esc(id)}" aria-pressed="false">
+                <i class="swatch" style="background:${esc(inspColor(id))}"></i>
+                <span><span class="big">${esc(inspName(id))}</span><span class="sub">${where}</span></span></button>`;
+    }).join('');
+    show('#step-inspector', true);
+    $('#step-inspector').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  $('#insp-choices').addEventListener('click', e => {
+    const b = e.target.closest('.choice');
+    if (b) selectInspector(b.dataset.insp);
+  });
+
+  /* ================================================================
+   * Step 4 — details form
+   * ================================================================ */
+  function selectInspector(id) {
+    S.inspectorId = id;
+    document.querySelectorAll('#insp-choices .choice').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.insp === id)));
+    $('#details-title').innerHTML =
+      `${esc(dateLabel(S.date))} · ${esc(t12(S.time))} · <span class="chip"><i style="background:${esc(inspColor(id))}"></i>${esc(inspName(id))}</span>`;
+    showAlert('#form-error', '');
+    show('#step-details', true);
+    $('#step-details').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  $('#details-change').addEventListener('click', () => {
+    show('#step-details', false);
+    $('#step-time').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  function fillSelect(sel, items, placeholder) {
+    sel.innerHTML = (placeholder ? `<option value="">${esc(placeholder)}</option>` : '') +
+      items.map(v => `<option>${esc(v)}</option>`).join('');
+  }
+
+  $('#booking-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const form = e.target;
+    const data = Object.fromEntries(new FormData(form).entries());
+    const missing = [...form.querySelectorAll('[required]')].find(el => !String(el.value).trim());
+    if (missing) {
+      missing.focus();
+      showAlert('#form-error', 'Please fill in all required fields.');
+      return;
+    }
+    if ((data.attendingPhone.match(/\d/g) || []).length < 10) { form.attendingPhone.focus(); return showAlert('#form-error', 'Please enter a 10-digit phone number.'); }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contactEmail.trim())) { form.contactEmail.focus(); return showAlert('#form-error', 'Please enter a valid contact email.'); }
+    if (!/^\d{5}(-\d{4})?$/.test(data.zip.trim())) { form.zip.focus(); return showAlert('#form-error', 'Please enter a valid ZIP code.'); }
+
+    Object.assign(data, { date: S.date, time: S.time, inspectorId: S.inspectorId });
+    const btn = $('#submit-btn');
+    btn.disabled = true; btn.textContent = 'Booking…';
+    showAlert('#form-error', '');
+    api('submitBooking', data).then(res => {
+      ['step-date', 'step-time', 'step-inspector', 'step-details'].forEach(id => show('#' + id, false));
+      $('#done-summary').innerHTML =
+        `<b>${esc(res.inspectorName)}</b> · ${esc(longDate(res.date))} · ${esc(t12(res.time))} · ${esc(res.city)}<br>` +
+        `<span class="muted small">Booking ${esc(res.bookingId)}</span>`;
+      $('#done-email').textContent = res.contactEmail ? `A confirmation was sent to ${res.contactEmail}.` : '';
+      show('#step-done', true);
+      $('#step-done').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      form.reset(); form.state.value = S.boot.defaultState;
+      S.months = {};
+    }).catch(err => {
+      const msg = errText(err);
+      showAlert('#form-error', msg);
+      if (/SLOT_TAKEN|no longer available|just booked/i.test(String(err && err.message))) {
+        S.months = {};
+        loadMonth(S.cal, true).then(() => { renderCalendar(); if (S.date) selectDate(S.date, true); showAlert('#form-error', ''); showAlert('#cal-error', msg); $('#step-date').scrollIntoView({ behavior: 'smooth' }); });
+      }
+    }).finally(() => { btn.disabled = false; btn.textContent = 'Confirm booking'; });
+  });
+
+  $('#book-another').addEventListener('click', () => {
+    show('#step-done', false);
+    show('#step-date', true);
+    resetFrom('date');
+    refreshCalendar(true);
+    $('#step-date').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  /* ================================================================
+   * Public schedule (city / date / time / inspector only)
+   * ================================================================ */
+  function renderPublic() {
+    const c = S.pub;
+    $('#pub-label').textContent = monthLabel(c);
+    const [ty, tm] = parseYmd(S.boot.today);
+    $('#pub-prev').disabled = c.y < ty || (c.y === ty && c.m <= tm);
+    $('#pub-next').disabled = monthKey(shiftMonth(c, 1)) > lastBookable();
+    const list = $('#pub-list');
+    const days = S.months[monthKey(c)];
+    showAlert('#pub-error', '');
+    if (!days) {
+      list.innerHTML = '<div class="empty">Loading…</div>';
+      loadMonth(c).then(() => { if (monthKey(c) === monthKey(S.pub)) renderPublic(); })
+        .catch(err => showAlert('#pub-error', 'Could not load schedule: ' + errText(err)));
+      return;
+    }
+    const f = $('#pub-filter').value;
+    const rows = Object.keys(days).sort().filter(s => s >= S.boot.today).map(s => {
+      const entries = days[s].schedule.filter(e => !f || e.inspectorId === f);
+      if (!entries.length) return '';
+      const canBook = Object.keys(days[s].slots).some(slot => days[s].slots[slot].length);
+      return `<div class="agenda-day"><div class="agenda-date"><span>${esc(longDate(s))}</span>
+                ${canBook ? `<button class="btn secondary small" data-book="${s}">Book this day</button>` : '<span class="muted small">Fully booked</span>'}</div>
+                ${entries.map(e => `<div class="entry"><span class="time">${esc(t12(e.time))}</span>
+                  <span class="chip"><i style="background:${esc(inspColor(e.inspectorId))}"></i>${esc(e.inspectorName)}</span>
+                  <span>${esc(e.city)}</span></div>`).join('')}</div>`;
+    }).join('');
+    list.innerHTML = rows || '<div class="empty">No inspections on the schedule for this month yet — plenty of open days!</div>';
+  }
+  $('#pub-prev').addEventListener('click', () => { S.pub = shiftMonth(S.pub, -1); renderPublic(); });
+  $('#pub-next').addEventListener('click', () => { S.pub = shiftMonth(S.pub, 1); renderPublic(); });
+  $('#pub-filter').addEventListener('change', renderPublic);
+  $('#pub-list').addEventListener('click', e => {
+    const b = e.target.closest('[data-book]');
+    if (!b) return;
+    const s = b.dataset.book;
+    const [y, m] = parseYmd(s);
+    S.cal = { y, m };
+    S.filter = $('#pub-filter').value;
+    $('#book-filter').value = S.filter;
+    show('#step-done', false); show('#step-date', true);
+    setTab('book');
+    renderCalendar();
+    selectDate(s);
+  });
+
+  /* ================================================================
+   * Inspector view (full details, requires access key)
+   * ================================================================ */
+  $('#login-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const key = e.target.key.value.trim();
+    if (!key) return;
+    login(key);
+  });
+
+  function login(key, silent) {
+    const btn = $('#login-btn');
+    btn.disabled = true;
+    showAlert('#login-error', '');
+    return api('inspectorLogin', key).then(res => {
+      S.ins.key = key;
+      S.ins.me = res.me;
+      S.ins.seeAll = res.seeAllDetails;
+      res.inspectors.forEach(i => { S.inspectors[i.id] = i; });
+      store.set('fsi_key', key);
+      $('#whoami').innerHTML = `<i style="background:${esc(res.me.color)}"></i>Signed in as ${esc(res.me.name)}`;
+      $('#ins-filter').innerHTML = `<option value="all">All inspectors</option><option value="mine">Only my jobs</option>` +
+        res.inspectors.filter(i => i.id !== res.me.id).map(i => `<option value="${esc(i.id)}">${esc(i.name)}</option>`).join('');
+      $('#ins-filter').value = S.ins.filter;
+      $('#ins-legend').innerHTML = res.inspectors.map(i =>
+        `<span><i class="dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${esc(i.color)}"></i>${esc(i.name)}</span>`).join('');
+      show('#insp-login', false); show('#insp-app', true);
+      $('#login-form').reset();
+      loadPrivate();
+    }).catch(err => {
+      store.set('fsi_key', null);
+      if (!silent) showAlert('#login-error', errText(err));
+    }).finally(() => { btn.disabled = false; });
+  }
+
+  $('#logout').addEventListener('click', () => {
+    store.set('fsi_key', null);
+    S.ins.key = null; S.ins.me = null; S.ins.list = [];
+    $('#ins-list').innerHTML = '';
+    show('#insp-app', false); show('#insp-login', true);
+  });
+
+  function loadPrivate() {
+    const c = S.ins.cursor;
+    $('#ins-label').textContent = monthLabel(c);
+    $('#ins-list').innerHTML = '<div class="empty">Loading…</div>';
+    return api('getPrivateSchedule', S.ins.key, monthKey(c), ymd(c.y, c.m, daysIn(c.y, c.m))).then(res => {
+      if (monthKey(c) !== monthKey(S.ins.cursor)) return;
+      S.ins.list = res.bookings;
+      renderPrivate();
+    }).catch(err => {
+      $('#ins-list').innerHTML = '';
+      showAlert('#ins-msg', errText(err));
+    });
+  }
+
+  function visibleJobs() {
+    const f = S.ins.filter;
+    return S.ins.list.filter(b => f === 'all' || (f === 'mine' ? b.mine : b.inspectorId === f));
+  }
+
+  function renderPrivate() {
+    const c = S.ins.cursor;
+    const jobs = visibleJobs();
+    $('#ins-count').textContent = `${jobs.length} job${jobs.length === 1 ? '' : 's'} this month`;
+
+    // Month overview
+    const byDay = {};
+    jobs.forEach(b => (byDay[b.date] = byDay[b.date] || []).push(b));
+    let grid = '';
+    const first = ymd(c.y, c.m, 1);
+    for (let i = 0; i < dow(first); i++) grid += '<div></div>';
+    for (let d = 1; d <= daysIn(c.y, c.m); d++) {
+      const s = ymd(c.y, c.m, d);
+      const list = byDay[s] || [];
+      const off = !S.boot.workDays.includes(dow(s));
+      grid += `<button class="mini-day${off ? ' off' : ''}" data-jump="${s}" ${list.length ? '' : 'tabindex="-1"'}
+                 title="${esc(list.map(b => `${t12(b.time)} ${b.inspectorName} — ${b.city}`).join('\n'))}">
+                 <span style="font-weight:${s === S.boot.today ? 700 : 400}">${d}</span>
+                 <span class="bars">${list.map(b => `<i class="bar" style="background:${esc(inspColor(b.inspectorId))}"></i>`).join('')}</span></button>`;
+    }
+    $('#ins-grid').innerHTML = grid;
+
+    // Agenda
+    const dates = Object.keys(byDay).sort();
+    $('#ins-list').innerHTML = dates.length ? dates.map(s => `
+      <div class="agenda-day" id="ins-day-${s}">
+        <div class="agenda-date"><span>${esc(longDate(s))}</span><span class="muted small">${byDay[s].length} job${byDay[s].length > 1 ? 's' : ''}</span></div>
+        ${byDay[s].map(jobHtml).join('')}
+      </div>`).join('') : '<div class="empty">No jobs this month.</div>';
+  }
+
+  function jobHtml(b) {
+    const chip = `<span class="chip"><i style="background:${esc(inspColor(b.inspectorId))}"></i>${esc(b.inspectorName)}${b.mine ? ' (you)' : ''}</span>`;
+    const head = `<span class="time" style="min-width:70px;color:var(--muted)">${esc(t12(b.time))}</span>${chip}<b>${esc(b.city)}</b>`;
+    if (b.redacted) {
+      return `<div class="entry" style="padding:10px 14px;border:1px solid var(--line);border-radius:10px;margin:8px 0">${head}
+                <span class="muted small">Details visible to ${esc(b.inspectorName)} only</span></div>`;
+    }
+    const tel = String(b.attendingPhone || '').replace(/[^\d+]/g, '');
+    const maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(b.address);
+    const others = Object.values(S.inspectors).filter(i => i.id !== b.inspectorId);
+    return `<details class="job" data-id="${esc(b.id)}">
+      <summary>${head}<span>· ${esc(b.clientName)}</span><span class="muted small">${esc(b.task)} · ${esc(b.lossType)}</span></summary>
+      <div class="job-body">
+        <dl class="kv">
+          <dt>When</dt><dd>${esc(longDate(b.date))}, ${esc(t12(b.time))} – ${esc(t12(b.endTime))}</dd>
+          <dt>Insured / client</dt><dd>${esc(b.clientName)}</dd>
+          <dt>Task</dt><dd>${esc(b.task)}</dd>
+          <dt>Loss type</dt><dd>${esc(b.lossType)}</dd>
+          <dt>Attending</dt><dd>${esc(b.attendingName)} — ${esc(b.attendingRole)}<br><a href="tel:${esc(tel)}">${esc(b.attendingPhone)}</a></dd>
+          <dt>Property address</dt><dd><a href="${esc(maps)}" target="_blank" rel="noopener">${esc(b.address)}</a></dd>
+          <dt>Form filled out by</dt><dd>${esc(b.filledBy)}</dd>
+          <dt>Contact email</dt><dd><a href="mailto:${esc(b.contactEmail)}">${esc(b.contactEmail)}</a></dd>
+          <dt>Notes</dt><dd>${esc(b.notes || '—')}</dd>
+          <dt>Booking</dt><dd class="muted small">${esc(b.id)}${b.submitted ? ' · submitted ' + esc(b.submitted) : ''}${b.lastChange ? '<br>' + esc(b.lastChange) : ''}</dd>
+        </dl>
+        ${others.length ? `<div class="job-actions">
+          <label class="small" style="display:flex;align-items:center;gap:8px">Hand off to
+            <select class="compact" data-role="reassign-to">${others.map(i => `<option value="${esc(i.id)}">${esc(i.name)}</option>`).join('')}</select>
+          </label>
+          <button class="btn secondary small" data-act="reassign">Reassign job</button>
+          <button class="btn danger small" data-act="cancel" style="margin-left:auto">Cancel booking</button>
+        </div>` : `<div class="job-actions"><button class="btn danger small" data-act="cancel">Cancel booking</button></div>`}
+      </div>
+    </details>`;
+  }
+
+  $('#ins-filter').addEventListener('change', e => { S.ins.filter = e.target.value; renderPrivate(); });
+  $('#ins-prev').addEventListener('click', () => { S.ins.cursor = shiftMonth(S.ins.cursor, -1); loadPrivate(); });
+  $('#ins-next').addEventListener('click', () => { S.ins.cursor = shiftMonth(S.ins.cursor, 1); loadPrivate(); });
+  $('#ins-grid').addEventListener('click', e => {
+    const b = e.target.closest('[data-jump]');
+    const target = b && document.getElementById('ins-day-' + b.dataset.jump);
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  $('#ins-list').addEventListener('click', e => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    const job = btn.closest('details.job');
+    const id = job.dataset.id;
+    const b = S.ins.list.find(x => x.id === id);
+    let p;
+    if (btn.dataset.act === 'reassign') {
+      const to = job.querySelector('[data-role="reassign-to"]').value;
+      if (!confirm(`Move ${b.city} on ${dateLabel(b.date)} at ${t12(b.time)} from ${b.inspectorName} to ${inspName(to)}?`)) return;
+      p = api('reassignBooking', S.ins.key, id, to).then(() => `Job ${id} reassigned to ${inspName(to)}. Both calendars and the public schedule were updated.`);
+    } else {
+      const reason = prompt(`Cancel ${b.city} on ${dateLabel(b.date)} at ${t12(b.time)}?\nOptional reason:`, '');
+      if (reason === null) return;
+      p = api('cancelBooking', S.ins.key, id, reason).then(() => `Booking ${id} cancelled and removed from both calendars.`);
+    }
+    btn.disabled = true;
+    p.then(msg => { showAlert('#ins-msg', msg, 'ok'); S.months = {}; return loadPrivate(); })
+     .catch(err => { showAlert('#ins-msg', errText(err)); btn.disabled = false; })
+     .finally(() => $('#ins-msg').scrollIntoView({ behavior: 'smooth', block: 'center' }));
+  });
+
+  /* ================================================================
+   * Boot
+   * ================================================================ */
+  function boot() {
+    show('#demo-banner', !IS_GAS);
+    api('getBootstrap').then(cfg => {
+      S.boot = cfg;
+      cfg.inspectors.forEach(i => { S.inspectors[i.id] = i; });
+      $('#company').textContent = cfg.company;
+      const [y, m] = parseYmd(cfg.today);
+      S.cal = { y, m }; S.pub = { y, m }; S.ins.cursor = { y, m };
+
+      const opts = cfg.inspectors.map(i => `<option value="${esc(i.id)}">${esc(i.name)}</option>`).join('');
+      $('#book-filter').insertAdjacentHTML('beforeend', opts);
+      $('#pub-filter').insertAdjacentHTML('beforeend', opts);
+      const f = $('#booking-form');
+      fillSelect(f.task, cfg.tasks, 'Select…');
+      fillSelect(f.lossType, cfg.lossTypes, 'Select…');
+      fillSelect(f.attendingRole, cfg.roles, 'Select…');
+      f.state.value = cfg.defaultState || '';
+      renderLegend('#cal-legend');
+
+      // If today's month is fully past/booked, jump ahead automatically.
+      loadMonth(S.cal).then(days => {
+        const anyOpen = Object.values(days).some(d => Object.values(d.slots).some(ids => ids.length));
+        if (!anyOpen && monthKey(shiftMonth(S.cal, 1)) <= lastBookable()) S.cal = shiftMonth(S.cal, 1);
+        refreshCalendar();
+      }).catch(err => showAlert('#cal-error', 'Could not load availability: ' + errText(err)));
+      renderCalendar();
+
+      const saved = store.get('fsi_key');
+      if (saved) login(saved, true);
+      if (/inspector/.test(location.hash)) setTab('inspector');
+    }).catch(err => {
+      $('#cal-grid').innerHTML = '';
+      showAlert('#cal-error', 'The booking system is not available right now: ' + errText(err));
+    });
+  }
+
+  /* ================================================================
+   * Demo backend — sample data used only when this file is opened
+   * directly in a browser (not deployed through Apps Script). Mirrors
+   * the server's API so the whole flow can be clicked through.
+   * ================================================================ */
+  const DemoBackend = (() => {
+    const cfg = {
+      company: 'First Sight Inspections',
+      slots: ['09:00', '11:00', '13:00', '15:00'],
+      slotMinutes: 120,
+      workDays: [1, 2, 3, 4, 5, 6],
+      minNoticeHours: 18,
+      horizonDays: 60,
+      tasks: ['Inspection', 'Reinspection', 'Supplement inspection', 'Other'],
+      lossTypes: ['Hail & Wind', 'Wind', 'Hail', 'Fire', 'Water', 'Other'],
+      roles: ['Contractor', 'Public Adjuster', 'Field Adjuster', 'Insured / Homeowner', 'Other'],
+      defaultState: 'MD'
+    };
+    const inspectors = [
+      { id: 'inspector-a', name: 'Inspector A', color: '#2563eb', key: 'demo-key-a' },
+      { id: 'inspector-b', name: 'Inspector B', color: '#0f8a6a', key: 'demo-key-b' }
+    ];
+    const now = new Date();
+    const today = ymd(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    const at = (s, hhmm) => { const [y, m, d] = parseYmd(s); const [h, mi] = hhmm.split(':').map(Number); return new Date(y, m - 1, d, h, mi).getTime(); };
+
+    // Deterministic pseudo-random sample schedule.
+    let seed = 20261103;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+    const pick = a => a[Math.floor(rnd() * a.length)];
+    const regions = [
+      ['Frederick', 'Middletown', 'Walkersville', 'Urbana'],
+      ['Bel Air', 'Aberdeen', 'Fallston', 'Abingdon'],
+      ['Towson', 'Parkville', 'Lutherville', 'Cockeysville'],
+      ['Columbia', 'Ellicott City', 'Laurel', 'Clarksville'],
+      ['Hagerstown', 'Boonsboro', 'Smithsburg'],
+      ['Annapolis', 'Severna Park', 'Arnold']
+    ];
+    const first = ['Maria', 'James', 'Linda', 'Robert', 'Patricia', 'David', 'Karen', 'Thomas', 'Susan', 'Kevin', 'Angela', 'Brian'];
+    const last = ['Alvarez', 'Bennett', 'Coleman', 'Dawson', 'Ellis', 'Foster', 'Grant', 'Hughes', 'Jensen', 'Keller', 'Morales', 'Nguyen'];
+    const companies = ['Chesapeake Roofing', 'Patriot Exteriors', 'Keystone Restoration', 'Old Line Claims Group', 'Blue Ridge Public Adjusters'];
+    const streets = ['Oak Ridge Dr', 'Market St', 'Hillcrest Ave', 'Church St', 'Mill Pond Rd', 'Linden Ln', 'Harford Rd', 'Patrick St'];
+    const bookings = [];
+    let counter = 1000;
+    for (let i = -14; i <= 50; i++) {
+      const s = addDays(today, i);
+      if (!cfg.workDays.includes(dow(s))) continue;
+      inspectors.forEach(insp => {
+        const r = rnd();
+        const n = r < 0.35 ? 0 : r < 0.75 ? 1 : r < 0.93 ? 2 : 3;
+        const region = pick(regions);
+        const slots = cfg.slots.slice().sort(() => rnd() - 0.5).slice(0, n).sort();
+        slots.forEach(slot => {
+          const name = `${pick(first)} ${pick(last)}`;
+          const city = pick(region);
+          const co = pick(companies);
+          bookings.push({
+            id: 'FSI-' + (counter++), status: 'Booked', date: s, time: slot, inspectorId: insp.id, city,
+            clientName: name, task: rnd() < 0.8 ? 'Inspection' : 'Reinspection', lossType: pick(['Hail & Wind', 'Hail & Wind', 'Wind', 'Water', 'Fire']),
+            attendingName: `${pick(first)} ${pick(last)}`, attendingRole: co.includes('Adjusters') || co.includes('Claims') ? 'Public Adjuster' : 'Contractor',
+            attendingPhone: `(410) 555-${String(1000 + Math.floor(rnd() * 8999))}`,
+            street: `${100 + Math.floor(rnd() * 9800)} ${pick(streets)}`, state: 'MD', zip: String(21000 + Math.floor(rnd() * 900)),
+            filledBy: `${pick(first)} at ${co}`, contactEmail: `scheduling@${co.toLowerCase().replace(/[^a-z]/g, '')}.example`,
+            notes: rnd() < 0.4 ? pick(['Gate code 4410. Dog in backyard.', 'Interior water damage in 2nd floor bath.', 'Homeowner works nights — call before 10am.', 'Ladder assist needed, steep roof.']) : '',
+            submitted: '', lastChange: ''
+          });
+        });
+      });
+    }
+
+    const delay = v => new Promise(r => setTimeout(() => r(JSON.parse(JSON.stringify(v))), 180));
+    const fail = msg => new Promise((_, rej) => setTimeout(() => rej(new Error(msg)), 180));
+    const insp = id => inspectors.find(i => i.id === id);
+    const live = () => bookings.filter(b => b.status === 'Booked');
+    const bookable = (s, slot) =>
+      cfg.slots.includes(slot) && cfg.workDays.includes(dow(s)) && s <= addDays(today, cfg.horizonDays) &&
+      at(s, slot) >= Date.now() + cfg.minNoticeHours * 3600000;
+    const isFree = (id, s, slot) => !live().some(b => b.inspectorId === id && b.date === s && b.time === slot);
+    const endT = hhmm => { const [h, m] = hhmm.split(':').map(Number); const t = h * 60 + m + cfg.slotMinutes; return `${pad(Math.floor(t / 60))}:${pad(t % 60)}`; };
+    const addr = b => `${b.street}, ${b.city}, ${b.state} ${b.zip}`;
+    const auth = key => inspectors.find(i => i.key === String(key || '').trim());
+    const full = (b, me) => Object.assign({}, b, {
+      inspectorName: insp(b.inspectorId).name, endTime: endT(b.time), address: addr(b), mine: b.inspectorId === me.id
+    });
+    const pub = i => ({ id: i.id, name: i.name, color: i.color });
+
+    return {
+      getBootstrap: () => delay(Object.assign({}, cfg, { today, inspectors: inspectors.map(pub) })),
+
+      getAvailability(start, end) {
+        const days = {};
+        for (let s = start; s <= end; s = addDays(s, 1)) {
+          const day = { slots: {}, schedule: [] };
+          cfg.slots.forEach(slot => {
+            if (bookable(s, slot)) day.slots[slot] = inspectors.filter(i => isFree(i.id, s, slot)).map(i => i.id);
+          });
+          // Public view: ONLY time / inspector / city.
+          day.schedule = live().filter(b => b.date === s).sort((a, b) => a.time.localeCompare(b.time))
+            .map(b => ({ date: s, time: b.time, endTime: endT(b.time), inspectorId: b.inspectorId, inspectorName: insp(b.inspectorId).name, city: b.city }));
+          days[s] = day;
+        }
+        return delay({ days });
+      },
+
+      submitBooking(p) {
+        if (!bookable(p.date, p.time)) return fail('That time is no longer available. Please choose another.');
+        if (!insp(p.inspectorId) || !isFree(p.inspectorId, p.date, p.time)) return fail('SLOT_TAKEN: Sorry — that inspector was just booked at that time.');
+        const b = Object.assign({}, p, {
+          id: 'FSI-' + (counter++), status: 'Booked', submitted: new Date().toLocaleString(), lastChange: 'Booked online (demo)'
+        });
+        delete b.website;
+        bookings.push(b);
+        return delay({ bookingId: b.id, date: b.date, time: b.time, inspectorName: insp(b.inspectorId).name, city: b.city, contactEmail: b.contactEmail });
+      },
+
+      inspectorLogin(key) {
+        const me = auth(key);
+        if (!me) return fail('That access key was not recognized.');
+        return delay({ me: pub(me), inspectors: inspectors.map(pub), seeAllDetails: true });
+      },
+
+      getPrivateSchedule(key, start, end) {
+        const me = auth(key);
+        if (!me) return fail('That access key was not recognized.');
+        const list = live().filter(b => b.date >= start && b.date <= end)
+          .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)).map(b => full(b, me));
+        return delay({ bookings: list });
+      },
+
+      reassignBooking(key, id, to) {
+        const me = auth(key);
+        if (!me) return fail('That access key was not recognized.');
+        const b = live().find(x => x.id === id);
+        if (!b) return fail('Booking not found.');
+        if (!isFree(to, b.date, b.time)) return fail(`${insp(to).name} already has something on their calendar at that time.`);
+        b.lastChange = `Reassigned ${insp(b.inspectorId).name} → ${insp(to).name} by ${me.name}`;
+        b.inspectorId = to;
+        return delay(full(b, me));
+      },
+
+      cancelBooking(key, id, reason) {
+        const me = auth(key);
+        if (!me) return fail('That access key was not recognized.');
+        const b = live().find(x => x.id === id);
+        if (!b) return fail('Booking not found.');
+        b.status = 'Cancelled';
+        b.lastChange = `Cancelled by ${me.name}${reason ? ' — ' + reason : ''}`;
+        return delay({ ok: true });
+      }
+    };
+  })();
+
+  boot();
+})();
+</script>
+</body>
+</html>
