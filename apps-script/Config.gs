@@ -36,9 +36,9 @@ var CONFIG = {
   DEFAULT_STATE: 'MD',
 
   // Drop-down choices on the booking form.
-  TASKS: ['Inspection', 'Reinspection', 'Supplement inspection', 'Other'],
+  TASKS: ['Adjuster Meet', 'Reinspection', 'Solo Inspection', 'Engineer Meet', 'ITEL', 'Attempt to Repair', 'Tarp'],
   LOSS_TYPES: ['Hail & Wind', 'Wind', 'Hail', 'Fire', 'Water', 'Other'],
-  ATTENDING_ROLES: ['Contractor', 'Public Adjuster', 'Field Adjuster', 'Insured / Homeowner', 'Other'],
+  ATTENDING_ROLES: ['Field Adjuster', 'Engineer', 'Ladder Assist', 'Other'],
 
   // Who gets the full-detail "new booking" email. Leave empty to send it
   // to the Google account that owns/deploys this script.

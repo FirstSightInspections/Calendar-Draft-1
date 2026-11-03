@@ -17,7 +17,7 @@ It runs on the Google tools you already use, with no third-party scheduling plat
 
 ## Try it right now (demo mode)
 
-Open `apps-script/Index.html` directly in any browser. It runs on built-in sample data, and nothing is saved. In the **Inspector view**, use access key `demo-key-a` or `demo-key-b`.
+Open `apps-script/Index.html` directly in any browser. It runs on built-in sample data, and nothing is saved. In the **Inspector view**, use access key `demo-key-a`.
 
 ## How privacy is enforced
 
@@ -52,7 +52,7 @@ Your spec sheet (§5) originally said each inspector should only see **their own
    - (Or use [clasp](https://github.com/google/clasp): `clasp create --type standalone --rootDir apps-script` and then `clasp push`.)
 4. **Check `Config.gs`.** Clients can pick start times **every 30 minutes from 8:00 AM to 5:00 PM** (`FIRST_START`, `LAST_START`, `START_EVERY_MINUTES`). Each job blocks the inspector for `SLOT_MINUTES` (default 2 hours), so a 9:00 job makes that inspector unavailable until 11:00. Working days, minimum notice, form drop-down choices, and who gets notification emails are also set there.
 5. **Run setup.** Select `setup` in the function drop-down and click **Run**, then approve the permissions. Setup will:
-   - create a **new** spreadsheet with `Bookings` and `Inspectors` tabs (with "Inspector A" and "Inspector B"). Its link is printed in the execution log;
+   - create a **new** spreadsheet with `Bookings` and `Inspectors` tabs (with one inspector row, "Inspector A", for you). Its link is printed in the execution log;
    - create a private calendar for each inspector and the public calendar;
    - generate an **access key** for each inspector (shown in the `Inspectors` tab and in the execution log).
 6. **Edit the `Inspectors` tab.**
@@ -63,9 +63,9 @@ Your spec sheet (§5) originally said each inspector should only see **their own
 7. **Deploy.** Choose **Deploy → New deployment → Web app**, with "Execute as: **Me**" and "Who has access: **Anyone**". Copy the web app URL.
 8. **Share the calendars with your inspectors** (optional but handy). In Google Calendar, share each private calendar with the inspectors ("See all event details" or "Make changes to events"). The jobs then also show up in their phone's calendar app.
 
-### Adding a third inspector later
+### Adding an inspector later
 
-Add a row to the `Inspectors` tab with just a **Name** and **Email**, and re-run `setup()`. Setup fills in the ID, color, access key and private calendar. No code changes are needed.
+It starts with just you. While there's only one inspector, clients skip the "choose your inspector" step and the inspector filters are hidden. To add someone, add a row to the `Inspectors` tab with just a **Name** and **Email**, and re-run `setup()`. Setup fills in the ID, color, access key and private calendar. No code changes are needed. The "choose your inspector" step and filters come back automatically.
 
 ### Days off and personal appointments
 

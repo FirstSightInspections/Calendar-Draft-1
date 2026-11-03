@@ -37,9 +37,8 @@ function setup() {
   var inspectorsSheet = ss.getSheetByName(SHEET_NAMES.INSPECTORS) || ss.insertSheet(SHEET_NAMES.INSPECTORS);
   ensureHeaders_(inspectorsSheet, INSPECTOR_COLUMNS);
   if (inspectorsSheet.getLastRow() < 2) {
-    inspectorsSheet.getRange(2, 1, 2, INSPECTOR_COLUMNS.length).setValues([
-      ['', 'Inspector A', '', '', '', '', true],
-      ['', 'Inspector B', '', '', '', '', true]
+    inspectorsSheet.getRange(2, 1, 1, INSPECTOR_COLUMNS.length).setValues([
+      ['', 'Inspector A', '', '', '', '', true]
     ]);
   }
 

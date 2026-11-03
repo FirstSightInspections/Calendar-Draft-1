@@ -186,7 +186,7 @@
   </header>
 
   <div id="demo-banner" class="demo-banner" hidden>
-    Demo mode — sample data only, nothing is saved. Inspector view access keys: <b>demo-key-a</b> or <b>demo-key-b</b>.
+    Demo mode — sample data only, nothing is saved. Inspector view access key: <b>demo-key-a</b>.
   </div>
 
   <nav class="tabs" role="tablist">
@@ -208,7 +208,7 @@
           <button class="icon-btn" id="cal-next" aria-label="Next month">›</button>
         </div>
       </div>
-      <div class="card-head" style="margin-bottom:10px">
+      <div class="card-head" style="margin-bottom:10px" id="book-filter-row">
         <label class="small" style="display:flex;align-items:center;gap:8px">Inspector
           <select class="compact" id="book-filter"><option value="">Any available</option></select>
         </label>
@@ -243,7 +243,7 @@
     <div class="card" id="step-details" hidden>
       <div class="card-head">
         <div>
-          <p class="step-label">Step 4 — inspection details</p>
+          <p class="step-label" id="details-label">Step 4 — inspection details</p>
           <p class="step-title" id="details-title"></p>
         </div>
         <button class="link" type="button" id="details-change">Change</button>
@@ -491,9 +491,12 @@
     grid.innerHTML = html;
   }
 
+  // One inspector: no "choose your inspector" step, no inspector filters.
+  const solo = () => S.boot.inspectors.length === 1;
+
   function renderLegend(el) {
     $(el).innerHTML = S.boot.inspectors.map(i =>
-      `<span><i class="dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${esc(i.color)}"></i>${esc(i.name)} already booked nearby</span>`
+      `<span><i class="dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${esc(i.color)}"></i>${solo() ? 'Already booked that day — city shown' : esc(i.name) + ' already booked nearby'}</span>`
     ).join('');
   }
 
@@ -553,7 +556,7 @@
     $('#time-choices').innerHTML = S.boot.slots.map(slot => {
       const offered = day.slots[slot] !== undefined;
       const n = offered ? freeFor(day, slot).length : 0;
-      const sub = !offered ? 'Not available' : n ? (S.filter ? 'Available' : `${n} available`) : 'Booked';
+      const sub = !offered ? 'Not available' : n ? (S.filter || solo() ? 'Available' : `${n} available`) : 'Booked';
       return `<button class="choice" data-time="${slot}" ${n ? '' : 'disabled'} aria-pressed="false" aria-label="${t12(slot)} to ${t12(endOf(slot))}, ${sub}">
                 <span class="big">${t12(slot)}</span><span class="sub">to ${t12(endOf(slot))}</span><span class="sub">${sub}</span></button>`;
     }).join('');
@@ -575,6 +578,7 @@
     document.querySelectorAll('#time-choices .choice').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.time === slot)));
     const day = dayData(S.date);
     const free = freeFor(day, slot);
+    if (solo() && free.length === 1) { selectInspector(free[0]); return; }
     $('#insp-title').textContent = `${dateLabel(S.date)} · ${t12(slot)}`;
     $('#insp-choices').innerHTML = free.map(id => {
       const mine = (day.schedule || []).filter(e => e.inspectorId === id);
@@ -599,6 +603,7 @@
    * ================================================================ */
   function selectInspector(id) {
     S.inspectorId = id;
+    $('#details-label').textContent = solo() ? 'Step 3 — inspection details' : 'Step 4 — inspection details';
     document.querySelectorAll('#insp-choices .choice').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.insp === id)));
     $('#details-title').innerHTML =
       `${esc(dateLabel(S.date))} · ${esc(t12(S.time))} · <span class="chip"><i style="background:${esc(inspColor(id))}"></i>${esc(inspName(id))}</span>`;
@@ -733,6 +738,7 @@
       $('#ins-filter').innerHTML = `<option value="all">All inspectors</option><option value="mine">Only my jobs</option>` +
         res.inspectors.filter(i => i.id !== res.me.id).map(i => `<option value="${esc(i.id)}">${esc(i.name)}</option>`).join('');
       $('#ins-filter').value = S.ins.filter;
+      show('#ins-filter', res.inspectors.length > 1);
       $('#ins-legend').innerHTML = res.inspectors.map(i =>
         `<span><i class="dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${esc(i.color)}"></i>${esc(i.name)}</span>`).join('');
       show('#insp-login', false); show('#insp-app', true);
@@ -908,6 +914,8 @@
       const opts = cfg.inspectors.map(i => `<option value="${esc(i.id)}">${esc(i.name)}</option>`).join('');
       $('#book-filter').insertAdjacentHTML('beforeend', opts);
       $('#pub-filter').insertAdjacentHTML('beforeend', opts);
+      show('#book-filter-row', !solo());
+      show('#pub-filter', !solo());
       const f = $('#booking-form');
       fillSelect(f.task, cfg.tasks, 'Select…');
       fillSelect(f.lossType, cfg.lossTypes, 'Select…');
@@ -945,14 +953,13 @@
       workDays: [1, 2, 3, 4, 5, 6],
       minNoticeHours: 18,
       horizonDays: 60,
-      tasks: ['Inspection', 'Reinspection', 'Supplement inspection', 'Other'],
+      tasks: ['Adjuster Meet', 'Reinspection', 'Solo Inspection', 'Engineer Meet', 'ITEL', 'Attempt to Repair', 'Tarp'],
       lossTypes: ['Hail & Wind', 'Wind', 'Hail', 'Fire', 'Water', 'Other'],
-      roles: ['Contractor', 'Public Adjuster', 'Field Adjuster', 'Insured / Homeowner', 'Other'],
+      roles: ['Field Adjuster', 'Engineer', 'Ladder Assist', 'Other'],
       defaultState: 'MD'
     };
     const inspectors = [
-      { id: 'inspector-a', name: 'Inspector A', color: '#1d4ed8', key: 'demo-key-a' },
-      { id: 'inspector-b', name: 'Inspector B', color: '#0f8a6a', key: 'demo-key-b' }
+      { id: 'inspector-a', name: 'Inspector A', color: '#1d4ed8', key: 'demo-key-a' }
     ];
     const now = new Date();
     const today = ymd(now.getFullYear(), now.getMonth() + 1, now.getDate());
@@ -996,8 +1003,8 @@
           const co = pick(companies);
           bookings.push({
             id: 'FSI-' + (counter++), status: 'Booked', date: s, time: slot, inspectorId: insp.id, city,
-            clientName: name, task: rnd() < 0.8 ? 'Inspection' : 'Reinspection', lossType: pick(['Hail & Wind', 'Hail & Wind', 'Wind', 'Water', 'Fire']),
-            attendingName: `${pick(first)} ${pick(last)}`, attendingRole: co.includes('Adjusters') || co.includes('Claims') ? 'Public Adjuster' : 'Contractor',
+            clientName: name, task: pick(cfg.tasks), lossType: pick(['Hail & Wind', 'Hail & Wind', 'Wind', 'Water', 'Fire']),
+            attendingName: `${pick(first)} ${pick(last)}`, attendingRole: pick(cfg.roles.slice(0, 3)),
             attendingPhone: `(410) 555-${String(1000 + Math.floor(rnd() * 8999))}`,
             street: `${100 + Math.floor(rnd() * 9800)} ${pick(streets)}`, state: 'MD',
             filledBy: `${pick(first)} at ${co}`, contactEmail: `scheduling@${co.toLowerCase().replace(/[^a-z]/g, '')}.example`,
